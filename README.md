@@ -15,6 +15,19 @@ schedules or publishes it once you approve.
 Networks: X, LinkedIn and Bluesky today. Instagram, Facebook, Threads, Google Business Profile, YouTube
 and TikTok are built and switch on as each network approves the app.
 
+## What the plugin contains, runs and sends
+
+- **One remote MCP server**, `https://app.spicapost.com/mcp` (`.mcp.json`), run by ML Apps LLC. Nothing
+  is installed or run on your computer: no scripts, no hooks, no packages.
+- **Three skills**, plain Markdown instructions for Claude: `get-started` (set up a brand and a first post),
+  `write-a-week` (plan and write a week of posts for your approval) and `check-results` (what went out, what
+  failed, how posts did).
+- **What is sent:** only what Claude passes to Spica Post's tools while you use them (your brand, drafts,
+  pictures you choose, the times you pick), over HTTPS to `app.spicapost.com`, after you sign in and press
+  Allow. Spica Post posts to your social accounts only after you approve each post.
+- **Privacy:** https://spicapost.com/legal/privacy/ · **Terms:** https://spicapost.com/legal/terms/ ·
+  **Support:** info@spicapost.com
+
 ## Connect
 
 **Claude** (web, desktop and phone): add [Spica Post from Claude's directory](https://claude.ai/directory/connectors/spica-post)
