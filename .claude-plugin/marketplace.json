@@ -1,0 +1,20 @@
+{
+  "name": "spica-post",
+  "owner": {
+    "name": "ML Apps LLC",
+    "email": "info@spicapost.com"
+  },
+  "metadata": {
+    "description": "Spica Post for Claude Code: the connector and its skills."
+  },
+  "plugins": [
+    {
+      "name": "spica-post",
+      "source": "./",
+      "description": "Draft, schedule and publish your social media posts from Claude, in your own brand, once you approve each one.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "homepage": "https://spicapost.com/mcp/"
+    }
+  ]
+}

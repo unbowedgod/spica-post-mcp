@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "spica-post": {
+      "type": "http",
+      "url": "https://app.spicapost.com/mcp"
+    }
+  }
+}

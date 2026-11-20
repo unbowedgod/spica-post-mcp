@@ -17,12 +17,21 @@ and TikTok are built and switch on as each network approves the app.
 
 ## Connect
 
-**Claude** (web and desktop): Settings → Connectors → Add custom connector → paste
-`https://app.spicapost.com/mcp`. [Guide](https://spicapost.com/connect/claude/)
+**Claude** (web, desktop and phone): add [Spica Post from Claude's directory](https://claude.ai/directory/connectors/spica-post)
+in one click, or Settings → Connectors → Add custom connector → paste `https://app.spicapost.com/mcp`.
+[Guide](https://spicapost.com/connect/claude/)
 
 **ChatGPT:** add it as a connector with the same address. [Guide](https://spicapost.com/connect/chatgpt/)
 
-**Claude Code**
+**Claude Code plugin** (the connector plus three skills: get-started, write-a-week, check-results)
+
+```sh
+/plugin install spica-post --marketplace unbowedgod/spica-post-mcp
+```
+
+On an older Claude Code: `/plugin marketplace add unbowedgod/spica-post-mcp`, then `/plugin install spica-post@spica-post`.
+
+**Claude Code, connector only**
 
 ```sh
 claude mcp add --transport http spica-post https://app.spicapost.com/mcp

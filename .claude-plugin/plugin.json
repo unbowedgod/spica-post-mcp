@@ -1,0 +1,14 @@
+{
+  "name": "spica-post",
+  "version": "1.0.0",
+  "description": "Draft, schedule and publish your social media posts from Claude, in your own brand, once you approve each one. X, LinkedIn and Bluesky today; more as each network approves the app.",
+  "author": {
+    "name": "ML Apps LLC",
+    "email": "info@spicapost.com",
+    "url": "https://spicapost.com"
+  },
+  "homepage": "https://spicapost.com/mcp/",
+  "repository": "https://github.com/unbowedgod/spica-post-mcp",
+  "license": "MIT",
+  "keywords": ["social media", "scheduling", "small business", "creators", "x", "linkedin", "bluesky", "mcp"]
+}
