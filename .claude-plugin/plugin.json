@@ -1,7 +1,7 @@
 {
   "name": "spica-post",
-  "version": "1.0.2",
-  "description": "Draft, schedule and publish your social media posts from Claude, in your own brand, once you approve each one. X, LinkedIn and Bluesky today; more as each network approves the app.",
+  "version": "1.0.3",
+  "description": "Draft, schedule, sync calendars, share client review links, manage team approvals and publish social media posts from Claude, in your own brand, once you approve each one.",
   "author": {
     "name": "ML Apps LLC",
     "email": "info@spicapost.com",
@@ -15,6 +15,12 @@
     "scheduling",
     "small business",
     "creators",
+    "agencies",
+    "teams",
+    "calendar sync",
+    "client approvals",
+    "audit log",
+    "webhooks",
     "x",
     "linkedin",
     "bluesky",

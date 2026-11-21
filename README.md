@@ -2,14 +2,13 @@
 
 # Spica Post MCP server
 
-Spica Post is a social media scheduler for small businesses and creators. This is its hosted MCP
-server: connect Claude, ChatGPT, Gemini, Cursor or any MCP client, tell it what's happening this week,
-and it drafts a post for each of your social accounts, checks each against that network's rules, and
-schedules or publishes it once you approve.
+Spica Post is a social media publishing suite for small businesses, creators, marketing teams and agencies.
+This is its hosted MCP server (**127 tools**, **14 guided prompts**, **11 read-only resources**, and **6 multi-brand URI templates**): connect Claude, ChatGPT, Gemini, Cursor or any MCP client, tell it what's happening this week, and it drafts posts in your saved brand, checks every network's rules, and schedules or publishes once you approve.
 
 - **Endpoint:** `https://app.spicapost.com/mcp` (remote, streamable HTTP)
 - **Sign-in:** OAuth with discovery and automatic client registration. No API key, nothing to install.
-- **Website:** https://spicapost.com · **Full tool reference:** https://spicapost.com/reference/
+- **Website:** https://spicapost.com · **MCP guide:** https://spicapost.com/mcp/ · **Full tool reference:** https://spicapost.com/reference/
+- **Developer REST API:** 113 HTTP routes at `https://app.spicapost.com/v1` (OpenAPI 3.0.3: `/v1/openapi.json`) · https://spicapost.com/developers/
 - **Registry name:** `com.spicapost/spica-post` in the [official MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=spicapost)
 
 Networks: X, LinkedIn and Bluesky today. Instagram, Facebook, Threads, Google Business Profile, YouTube
@@ -19,9 +18,14 @@ and TikTok are built and switch on as each network approves the app.
 
 - **One remote MCP server**, `https://app.spicapost.com/mcp` (`.mcp.json`), run by ML Apps LLC. Nothing
   is installed or run on your computer: no scripts, no hooks, no packages.
-- **Three skills**, plain Markdown instructions for Claude: `get-started` (set up a brand and a first post),
-  `write-a-week` (plan and write a week of posts for your approval) and `check-results` (what went out, what
-  failed, how posts did).
+- **Nine skills**, plain Markdown instructions for Claude: `get-started` (set up a brand and a first post),
+  `write-a-week` (plan and write a week of posts for your approval), `check-results` (what went out, what
+  failed, how posts did), `rescue-and-manage` (daily briefings, reconnect links, failed post retries and
+  batch schedule edits), `client-review` (shareable zero-login client review links and live calendar sync),
+  `triage-approvals` (internal approval queues, client change requests and audit logs), `setup-webhooks`
+  (signed HTTPS webhook setup and delivery inspection), `agency-brands` (multi-brand portfolio briefings,
+  new brand onboarding and safe cross-brand account moves), and `manage-team` (seat limits, role-bound
+  invitations, permission updates and audit trails).
 - **What is sent:** only what Claude passes to Spica Post's tools while you use them (your brand, drafts,
   pictures you choose, the times you pick), over HTTPS to `app.spicapost.com`, after you sign in and press
   Allow. Spica Post posts to your social accounts only after you approve each post.
@@ -36,7 +40,7 @@ in one click, or Settings → Connectors → Add custom connector → paste `htt
 
 **ChatGPT:** add it as a connector with the same address. [Guide](https://spicapost.com/connect/chatgpt/)
 
-**Claude Code plugin** (the connector plus three skills: get-started, write-a-week, check-results)
+**Claude Code plugin** (the connector plus nine workflow skills)
 
 ```sh
 /plugin install spica-post --marketplace unbowedgod/spica-post-mcp
@@ -70,112 +74,228 @@ The first call opens the Spica Post sign-in in your browser. Sign in (or create 
 Allow. Until then every call answers 401. Then ask your assistant to "set me up": it calls `setup_start`
 and walks you to your first post in a few minutes.
 
-## What it can do
+## Guided workflow prompts (14)
+
+- `set_me_up` (Set me up) — Read my business, save my brand and draft a first week.
+- `write_a_week` (Write a week of posts) — Plan and draft a week of platform-native posts across connected accounts for my approval.
+- `audit_and_plan` (Review results and plan next week) — Audit post performance, Google Business Profile numbers, failed deliveries and topic gaps.
+- `write_an_article` (Write a blog article (Pro)) — Research local keywords, draft a brand article with FAQ and sources, and prepare it for the blog.
+- `repurpose_content` (Repurpose content across networks) — Turn an article, announcement or note into distinct drafts for each connected network.
+- `setup_autoreply` (Set up an Instagram auto-reply) — Draft an Instagram comment-to-DM rule with trigger words and message for approval.
+- `build_media_kit` (Build my sponsor media kit (Pro)) — Draft and preview a live sponsor media kit at /@handle/media-kit backed by Results.
+- `rescue_failed_posts` (Rescue failed deliveries) — Inspect failed deliveries, explain root causes, share reconnect links and retry approved posts.
+- `plan_next_fortnight` (Plan the next two weeks) — Inspect the 14-day content calendar, open queue slots and topic gaps to draft a two-week plan.
+- `agency_daily_brief` (Daily briefing across all brands) — Check every brand at once for lapsed accounts, failed deliveries, upcoming posts and schedule gaps.
+- `share_for_client_review` (Share calendar for client review) — Create or share a zero-login client review link and summarize recent client feedback.
+- `triage_approvals` (Triage pending approvals and client feedback) — Review internal approval requests and external client change requests before approving or editing.
+- `setup_webhooks` (Set up and test signed webhooks) — Configure a signed HTTPS webhook for Slack, Zapier, Make or your own server and verify delivery.
+- `onboard_new_brand` (Onboard a new brand or client) — Create a new brand workspace, study its website, save its brand kit, connect accounts and draft a first post.
+
+## Read-only resources (11) & URI templates (6)
+
+- `spica://guides/playbook` — Platform-native writing rules for every social network Spica Post supports.
+- `spica://guides/grader` — Rubric and pass criteria for grading social posts and blog articles before approval.
+- `spica://guides/capabilities` — Caption limits, media formats, file counts and story rules for every supported network.
+- `spica://guides/templates` — All available designed post and carousel templates with page types, sizes and field limits.
+- `spica://workspace/overview` — Live read-only snapshot of brand readiness, accounts, usage, queue, drafts, deliveries and attention items.
+- `spica://workspace/calendar` — Live 14-day schedule in the workspace time zone showing scheduled posts, open queue slots and empty days.
+- `spica://workspace/approvals` — Live list of internal draft approval requests currently awaiting review.
+- `spica://workspace/reviews` — Live list of shareable zero-login client review links and recent client approvals or change requests.
+- `spica://brands/overview` — Live read-only portfolio briefing across every brand held by this login, with totals and attention items.
+- `spica://brands/calendar` — Live 14-day unified schedule across every brand held by this login.
+- `spica://brands/approvals` — Live pending internal approval requests and recent client review feedback across every brand held by this login.
+
+- `spica://brands/{brandId}/overview` — Live read-only workspace overview for one specific brand id (ideal for multi-brand logins).
+- `spica://brands/{brandId}/calendar` — Live 14-day local-timezone content calendar for one specific brand id.
+- `spica://brands/{brandId}/brand` — Saved brand voice, business details, offers, colours, fonts, library and guardrails for one brand id.
+- `spica://brands/{brandId}/approvals` — Live pending internal approval requests for one specific brand id.
+- `spica://brands/{brandId}/reviews` — Live shareable client review links and recent client feedback for one specific brand id.
+- `spica://guides/playbook/{network}` — Platform-native writing rules for one specific social network key (such as instagram, linkedin or x).
+
+## What it can do (127 tools)
 
 Nothing is published or scheduled without your yes to that post.
 
-### Accounts
+### undefined
 
-- `accounts_list` (List connected accounts) · read only
-- `accounts_connect` (Get a link to connect an account) · read only
-- `capabilities` (What each network takes) · read only
-- `posts_recent` (Recent posts on an account) · read only
-- `boards_list` (List Pinterest boards) · read only
-- `accounts_board` (Choose a Pinterest board)
-- `tiktok_account_get` (What a TikTok account allows) · read only
-- `accounts_disconnect` (Disconnect an account) · changes what is published
-- `accounts_create_test` (Make a practice account)
+- `accounts_list` (undefined)
+- `accounts_connect` (undefined)
+- `capabilities` (undefined)
+- `posts_recent` (undefined)
+- `boards_list` (undefined)
+- `boards_create` (undefined)
+- `boards_edit` (undefined)
+- `accounts_board` (undefined)
+- `tiktok_account_get` (undefined)
+- `accounts_disconnect` (undefined)
+- `accounts_create_test` (undefined)
 
-### Media
+### undefined
 
-- `media_upload` (Upload a photo or video)
-- `media_from_url` (Add a photo or video from a link)
-- `media_list` (List photos and videos) · read only
-- `media_view` (Look at a photo or video) · read only
-- `media_delete` (Delete a photo or video) · changes what is published
+- `media_upload` (undefined)
+- `media_upload_link` (undefined)
+- `media_from_url` (undefined)
+- `media_list` (undefined)
+- `media_view` (undefined)
+- `media_update` (undefined)
+- `media_delete` (undefined)
 
-### Drafts
+### undefined
 
-- `drafts_create` (Write a draft)
-- `drafts_edit` (Edit a draft)
-- `drafts_validate` (Check a draft) · read only
-- `post_check` (Check a post against a network) · read only
-- `drafts_get` (Read a draft) · read only
-- `drafts_list` (List drafts) · read only
-- `drafts_delete` (Delete a draft) · changes what is published
-- `drafts_hold` (Keep a post until its account is connected)
-- `drafts_hold_delete` (Drop a waiting post) · changes what is published
+- `drafts_create` (undefined)
+- `drafts_create_batch` (undefined)
+- `drafts_edit` (undefined)
+- `drafts_validate` (undefined)
+- `drafts_validate_batch` (undefined)
+- `post_check` (undefined)
+- `drafts_get` (undefined)
+- `drafts_list` (undefined)
+- `drafts_search` (undefined)
+- `drafts_duplicate` (undefined)
+- `drafts_delete` (undefined)
+- `drafts_delete_batch` (undefined)
+- `drafts_hold` (undefined)
+- `drafts_hold_list` (undefined)
+- `drafts_hold_delete` (undefined)
 
-### Publishing
+### undefined
 
-- `publish` (Publish now) · changes what is published
-- `schedule` (Schedule a post) · changes what is published
-- `queue_add` (Add a post to the queue) · changes what is published
-- `queue_get` (Read the posting queue) · read only
-- `queue_set` (Set the posting times)
-- `jobs_get` (Read a scheduled post) · read only
-- `jobs_list` (List scheduled and sent posts) · read only
-- `results_get` (Read how posts did) · read only
-- `jobs_reschedule` (Move a scheduled post) · changes what is published
-- `jobs_cancel` (Cancel a scheduled post) · changes what is published
+- `publish` (undefined)
+- `schedule` (undefined)
+- `schedule_batch` (undefined)
+- `queue_add` (undefined)
+- `queue_get` (undefined)
+- `queue_set` (undefined)
+- `content_calendar_get` (undefined)
+- `brands_calendar_get` (undefined)
+- `jobs_get` (undefined)
+- `jobs_list` (undefined)
+- `jobs_query` (undefined)
+- `results_get` (undefined)
+- `brands_results_summary` (undefined)
+- `jobs_reschedule` (undefined)
+- `jobs_reschedule_batch` (undefined)
+- `jobs_cancel` (undefined)
+- `jobs_cancel_batch` (undefined)
+- `jobs_retry` (undefined)
 
-### Brand
+### undefined
 
-- `setup_start` (Start setup) · read only
-- `site_study` (Read a business website) · read only
-- `brand_get` (Read the brand) · read only
-- `brand_save` (Save the brand)
-- `brand_rename` (Rename the brand)
-- `profile_get` (Read the industry profile) · read only
-- `profile_save` (Save the industry profile)
+- `brands_list` (undefined)
+- `brands_create` (undefined)
+- `brands_move_account` (undefined)
+- `brands_overview` (undefined)
+- `setup_start` (undefined)
+- `site_study` (undefined)
+- `brand_get` (undefined)
+- `fonts_list` (undefined)
+- `brand_save` (undefined)
+- `brand_rename` (undefined)
+- `profile_get` (undefined)
+- `profile_save` (undefined)
 
-### Templates
+### undefined
 
-- `templates_list` (List post designs) · read only
-- `templates_get` (Read a post design) · read only
-- `templates_render` (Make a designed post)
+- `templates_list` (undefined)
+- `templates_get` (undefined)
+- `templates_render` (undefined)
 
-### Topics
+### undefined
 
-- `coverage_get` (What topics are covered) · read only
-- `keywords_research` (Research local keywords)
-- `keywords_list` (List researched keywords) · read only
-- `topics_list` (List topics) · read only
-- `topics_add` (Add a topic)
-- `topics_link` (Tie drafts to a topic)
-- `topics_remove` (Remove a topic) · changes what is published
+- `coverage_get` (undefined)
+- `keywords_research` (undefined)
+- `keywords_list` (undefined)
+- `topics_list` (undefined)
+- `topics_add` (undefined)
+- `topics_update` (undefined)
+- `topics_link` (undefined)
+- `topics_remove` (undefined)
 
-### Writing guides
+### undefined
 
-- `playbook_get` (Read the writing playbook) · read only
-- `grader_get` (Read the draft grader) · read only
+- `playbook_get` (undefined)
+- `grader_get` (undefined)
 
-### Articles
+### undefined
 
-- `articles_save` (Save an article)
-- `articles_get` (Read an article) · read only
-- `articles_list` (List articles) · read only
-- `articles_delete` (Delete an article) · changes what is published
+- `articles_save` (undefined)
+- `articles_get` (undefined)
+- `articles_list` (undefined)
+- `articles_delete` (undefined)
 
-### Locations
+### undefined
 
-- `locations_list` (List locations) · read only
-- `locations_save` (Save a location)
-- `locations_report` (Report for a location) · read only
-- `locations_delete` (Delete a location) · changes what is published
+- `locations_list` (undefined)
+- `locations_save` (undefined)
+- `locations_report` (undefined)
+- `locations_delete` (undefined)
 
-### Link page
+### undefined
 
-- `links_list` (List link pages) · read only
-- `links_save` (Save a link page)
-- `links_delete` (Delete a link page) · changes what is published
+- `autoreplies_list` (undefined)
+- `autoreplies_save` (undefined)
+- `autoreplies_delete` (undefined)
 
-### Plan and help
+### undefined
 
-- `usage_get` (Plan and usage) · read only
-- `settings_set_time_zone` (Set the time zone)
-- `help_search` (Search help) · read only
-- `help_get` (Read a help article) · read only
+- `links_list` (undefined)
+- `links_save` (undefined)
+- `links_delete` (undefined)
+- `media_kit_get` (undefined)
+- `media_kit_save` (undefined)
+
+### undefined
+
+- `calendars_list` (undefined)
+- `calendars_feed_set` (undefined)
+- `calendars_external_save` (undefined)
+- `calendars_external_sync` (undefined)
+- `calendars_external_delete` (undefined)
+
+### undefined
+
+- `review_links_list` (undefined)
+- `review_links_save` (undefined)
+- `review_links_delete` (undefined)
+
+### undefined
+
+- `team_settings_get` (undefined)
+- `team_settings_set` (undefined)
+- `team_members_list` (undefined)
+- `team_invite` (undefined)
+- `team_invite_revoke` (undefined)
+- `team_role_set` (undefined)
+- `team_member_remove` (undefined)
+- `approvals_list` (undefined)
+- `brands_approvals_list` (undefined)
+- `approvals_submit` (undefined)
+- `approvals_decide` (undefined)
+- `approvals_cancel` (undefined)
+- `audit_list` (undefined)
+
+### undefined
+
+- `webhooks_list` (undefined)
+- `webhooks_save` (undefined)
+- `webhooks_test` (undefined)
+- `webhooks_events` (undefined)
+- `webhooks_delete` (undefined)
+
+### undefined
+
+- `export_schedule` (undefined)
+- `export_results` (undefined)
+- `export_locations` (undefined)
+- `export_audit` (undefined)
+
+### undefined
+
+- `workspace_overview` (undefined)
+- `usage_get` (undefined)
+- `settings_set_time_zone` (undefined)
+- `help_search` (undefined)
+- `help_get` (undefined)
 
 ## Plans
 
@@ -189,4 +309,4 @@ with 7 days free). Current plans and limits: https://spicapost.com/pricing.json
 - Support: info@spicapost.com
 
 Spica Post is made by ML Apps LLC, Florida. The server's source is not public; this repository holds its
-public description, registry entry and logo.
+public description, registry entry, skills and logo.

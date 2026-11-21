@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.spicapost/spica-post",
   "title": "Spica Post",
-  "description": "Your AI assistant drafts, schedules and posts to your social accounts once you approve.",
-  "version": "1.0.1",
+  "description": "Draft and schedule social posts across brands via MCP, sync calendars, share client review links, and manage team approvals.",
+  "version": "1.0.3",
   "websiteUrl": "https://spicapost.com",
   "repository": {
     "url": "https://github.com/unbowedgod/spica-post-mcp",
