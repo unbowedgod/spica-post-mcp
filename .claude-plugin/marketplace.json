@@ -11,8 +11,8 @@
     {
       "name": "spica-post",
       "source": "./",
-      "description": "Draft, schedule, sync calendars, share client review links, manage team approvals and publish social posts from Claude once you approve each one.",
-      "version": "1.0.3",
+      "description": "Draft, schedule, track clicks, connect custom domains, sync calendars, share client review links, manage team approvals and publish social posts from Claude once you approve each one.",
+      "version": "1.0.4",
       "category": "productivity",
       "homepage": "https://spicapost.com/mcp/"
     }

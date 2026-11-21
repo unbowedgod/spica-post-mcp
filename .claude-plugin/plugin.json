@@ -1,7 +1,7 @@
 {
   "name": "spica-post",
-  "version": "1.0.3",
-  "description": "Draft, schedule, sync calendars, share client review links, manage team approvals and publish social media posts from Claude, in your own brand, once you approve each one.",
+  "version": "1.0.4",
+  "description": "Draft, schedule, track clicks, connect custom domains, sync calendars, share client review links, manage team approvals and publish social media posts from Claude, in your own brand, once you approve each one.",
   "author": {
     "name": "ML Apps LLC",
     "email": "info@spicapost.com",
@@ -17,6 +17,9 @@
     "creators",
     "agencies",
     "teams",
+    "custom domains",
+    "short links",
+    "search console",
     "calendar sync",
     "client approvals",
     "audit log",

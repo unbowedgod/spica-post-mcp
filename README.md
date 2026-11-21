@@ -3,12 +3,12 @@
 # Spica Post MCP server
 
 Spica Post is a social media publishing suite for small businesses, creators, marketing teams and agencies.
-This is its hosted MCP server (**127 tools**, **14 guided prompts**, **11 read-only resources**, and **6 multi-brand URI templates**): connect Claude, ChatGPT, Gemini, Cursor or any MCP client, tell it what's happening this week, and it drafts posts in your saved brand, checks every network's rules, and schedules or publishes once you approve.
+This is its hosted MCP server (**133 tools**, **14 guided prompts**, **11 read-only resources**, and **6 multi-brand URI templates**): connect Claude, ChatGPT, Gemini, Cursor or any MCP client, tell it what's happening this week, and it drafts posts in your saved brand, checks every network's rules, and schedules or publishes once you approve.
 
 - **Endpoint:** `https://app.spicapost.com/mcp` (remote, streamable HTTP)
 - **Sign-in:** OAuth with discovery and automatic client registration. No API key, nothing to install.
 - **Website:** https://spicapost.com · **MCP guide:** https://spicapost.com/mcp/ · **Full tool reference:** https://spicapost.com/reference/
-- **Developer REST API:** 113 HTTP routes at `https://app.spicapost.com/v1` (OpenAPI 3.0.3: `/v1/openapi.json`) · https://spicapost.com/developers/
+- **Developer REST API:** 120 HTTP routes at `https://app.spicapost.com/v1` (OpenAPI 3.0.3: `/v1/openapi.json`) · https://spicapost.com/developers/
 - **Registry name:** `com.spicapost/spica-post` in the [official MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=spicapost)
 
 Networks: X, LinkedIn and Bluesky today. Instagram, Facebook, Threads, Google Business Profile, YouTube
@@ -18,9 +18,11 @@ and TikTok are built and switch on as each network approves the app.
 
 - **One remote MCP server**, `https://app.spicapost.com/mcp` (`.mcp.json`), run by ML Apps LLC. Nothing
   is installed or run on your computer: no scripts, no hooks, no packages.
-- **Nine skills**, plain Markdown instructions for Claude: `get-started` (set up a brand and a first post),
+- **Ten skills**, plain Markdown instructions for Claude: `get-started` (set up a brand and a first post),
   `write-a-week` (plan and write a week of posts for your approval), `check-results` (what went out, what
-  failed, how posts did), `rescue-and-manage` (daily briefings, reconnect links, failed post retries and
+  failed, tracked short-link clicks, Google Business Profile & Search Console metrics, and how posts did),
+  `links-and-domains` (link pages, Pro custom domains & white-label DNS setup, tracked short links and
+  sponsor media kits), `rescue-and-manage` (daily briefings, reconnect links, failed post retries and
   batch schedule edits), `client-review` (shareable zero-login client review links and live calendar sync),
   `triage-approvals` (internal approval queues, client change requests and audit logs), `setup-webhooks`
   (signed HTTPS webhook setup and delivery inspection), `agency-brands` (multi-brand portfolio briefings,
@@ -40,7 +42,7 @@ in one click, or Settings → Connectors → Add custom connector → paste `htt
 
 **ChatGPT:** add it as a connector with the same address. [Guide](https://spicapost.com/connect/chatgpt/)
 
-**Claude Code plugin** (the connector plus nine workflow skills)
+**Claude Code plugin** (the connector plus ten workflow skills)
 
 ```sh
 /plugin install spica-post --marketplace unbowedgod/spica-post-mcp
@@ -112,7 +114,7 @@ and walks you to your first post in a few minutes.
 - `spica://brands/{brandId}/reviews` — Live shareable client review links and recent client feedback for one specific brand id.
 - `spica://guides/playbook/{network}` — Platform-native writing rules for one specific social network key (such as instagram, linkedin or x).
 
-## What it can do (127 tools)
+## What it can do (133 tools)
 
 Nothing is published or scheduled without your yes to that post.
 
@@ -241,6 +243,12 @@ Nothing is published or scheduled without your yes to that post.
 - `links_list` (undefined)
 - `links_save` (undefined)
 - `links_delete` (undefined)
+- `links_domain_set` (undefined)
+- `links_domain_verify` (undefined)
+- `links_domain_remove` (undefined)
+- `short_links_list` (undefined)
+- `short_links_save` (undefined)
+- `short_links_delete` (undefined)
 - `media_kit_get` (undefined)
 - `media_kit_save` (undefined)
 
