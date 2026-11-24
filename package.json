@@ -1,0 +1,20 @@
+{
+  "name": "spica-cli",
+  "version": "1.0.0",
+  "description": "Zero-dependency CLI & portable Agent Plugin for Spica Post — draft, schedule, queue and track social posts via the /v1 REST API.",
+  "type": "module",
+  "license": "MIT",
+  "author": "ML Apps LLC <info@spicapost.com>",
+  "homepage": "https://spicapost.com/developers/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unbowedgod/spica-post-mcp.git"
+  },
+  "bin": {
+    "spica": "./skills/spica-post/scripts/spica.mjs",
+    "spica-cli": "./skills/spica-post/scripts/spica.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Spica Post CLI (zero dependencies, Node.js 18+).
 // Wraps the hosted Spica Post /v1 REST API (https://app.spicapost.com/v1).
-// Works standalone via `npx spica-cli <command>`, globally as `spica <command>` (`npm i -g spica-cli`), or as a bundled skill script.
+// Works standalone via `npx github:unbowedgod/spica-post-mcp <command>`, globally as `spica <command>` (`npm i -g github:unbowedgod/spica-post-mcp`), or as a bundled skill script.
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -274,7 +274,7 @@ function requireKey(cfg) {
   if (!cfg.apiKey) {
     throw new CliError(
       `API key not found.\n` +
-        `Run: npx spica-cli setup --key sp_live_xxxxx\n` +
+        `Run: npx github:unbowedgod/spica-post-mcp setup --key sp_live_xxxxx\n` +
         `Get a key at: ${DEVELOPERS_URL}\n` +
         `Or connect via OAuth MCP with no API key: ${MCP_URL}`,
       { exitCode: 2, code: 'missing_api_key' },
@@ -383,9 +383,9 @@ function formatHelpText() {
     `spica-cli v${VERSION} — CLI for Spica Post (/v1 REST API)`,
     '',
     'Usage:',
-    '  npx spica-cli <command> [flags]',
-    '  spica <command> [flags]          (after `npm i -g spica-cli`)',
-    '  npx spica-cli help --json',
+    '  npx github:unbowedgod/spica-post-mcp <command> [flags]',
+    '  spica <command> [flags]          (after `npm i -g github:unbowedgod/spica-post-mcp`)',
+    '  spica help --json',
     '',
     'Auth priority:',
     '  1. SPICA_API_KEY env var',
@@ -907,7 +907,7 @@ export async function runCli(
       }
 
       default:
-        throw new CliError(`Unknown command "${command}". Run "npx spica-cli help" to see available commands.`, {
+        throw new CliError(`Unknown command "${command}". Run "npx github:unbowedgod/spica-post-mcp help" to see available commands.`, {
           code: 'unknown_command',
         });
     }

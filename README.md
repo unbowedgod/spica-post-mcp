@@ -76,13 +76,14 @@ agy mcp add spica-post https://app.spicapost.com/mcp
 Create an API key (`sp_live_...`) on your [Developers page](https://app.spicapost.com/developers), then run:
 
 ```bash
-npx spica-cli setup --key sp_live_xxxxx
-npx spica-cli accounts
-npx spica-cli post --text "New release is live." --accounts acc_1 --draft
-
-# Or install globally for the short `spica` command:
-npm i -g spica-cli
+# Install globally for the short `spica` command (no npm registry required):
+npm i -g github:unbowedgod/spica-post-mcp
+spica setup --key sp_live_xxxxx
 spica accounts
+spica post --text "New release is live." --accounts acc_1 --draft
+
+# Or run directly without installing:
+npx github:unbowedgod/spica-post-mcp accounts
 ```
 
 ## Included Skills (12)
