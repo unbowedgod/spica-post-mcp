@@ -12,7 +12,7 @@ Give your AI assistant or coding agent full social media publishing, brand voice
 - **Hosted MCP Endpoint:** `https://app.spicapost.com/mcp` (Streamable HTTP, OAuth with automatic discovery and registration — **no API key needed**) · Lean 28-tool profile: `https://app.spicapost.com/mcp?profile=core`
 - **MCP Surface:** **144 tools** (or **28** with `?profile=core`), **16 guided prompts** with argument completions, and **23 read-only resources & multi-brand URI templates**
 - **Developer REST API:** 132 routes at `https://app.spicapost.com/v1` (OpenAPI 3.0.3: `/v1/openapi.json`)
-- **CLI:** Zero-dependency `spica-post-cli` (plus bundled fallback `skills/spica-post/scripts/spica-post.mjs`)
+- **CLI:** Zero-dependency `spica-cli` (exposes `spica` and `spica-cli`, plus bundled fallback `skills/spica-post/scripts/spica.mjs`)
 - **Registry ID:** `com.spicapost/spica-post` in the [Official MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=com.spicapost/spica-post)
 
 **Networks:** X, LinkedIn, Bluesky and Google Business Profile enabled today. Instagram, Facebook Pages, Threads, TikTok, YouTube, Pinterest and LinkedIn Company Pages are built and activate as each network approves the app.
@@ -76,9 +76,13 @@ agy mcp add spica-post https://app.spicapost.com/mcp
 Create an API key (`sp_live_...`) on your [Developers page](https://app.spicapost.com/developers), then run:
 
 ```bash
-npx spica-post-cli setup --key sp_live_xxxxx
-npx spica-post-cli accounts
-npx spica-post-cli post --text "New release is live." --accounts acc_1 --draft
+npx spica-cli setup --key sp_live_xxxxx
+npx spica-cli accounts
+npx spica-cli post --text "New release is live." --accounts acc_1 --draft
+
+# Or install globally for the short `spica` command:
+npm i -g spica-cli
+spica accounts
 ```
 
 ## Included Skills (12)

@@ -2,11 +2,11 @@
 name: spica-post
 description: >
   Draft, validate, schedule, queue and track social media posts in your saved brand across connected
-  accounts via Spica Post (hosted OAuth MCP server, spica-post-cli, or /v1 REST API). Covers brand
+  accounts via Spica Post (hosted OAuth MCP server, spica-cli, or /v1 REST API). Covers brand
   setup, media uploads, platform-specific options, queue scheduling, whole-account analytics sync,
   tracked short links, link pages, calendar sync, client review links and team approvals.
 last-updated: 2026-11-23
-allowed-tools: Bash(npx spica-post-cli:*), Bash(spica-post-cli:*), Bash(node *spica-post.mjs:*)
+allowed-tools: Bash(npx spica-cli:*), Bash(spica-cli:*), Bash(spica:*), Bash(node *spica.mjs:*)
 ---
 
 # Spica Post Social Media Skill
@@ -33,9 +33,9 @@ Two ways to connect — pick whichever fits your environment:
 1. **Hosted MCP Server (OAuth, zero API key — recommended for Cursor, Claude, ChatGPT, Codex, Windsurf):**
    `https://app.spicapost.com/mcp` (full 144 tools) or `https://app.spicapost.com/mcp?profile=core` (lean 28 core tools for small context windows)
 2. **CLI / REST API (for terminal agents, cron jobs, CI, OpenClaw, or clients without OAuth):**
-   Run **`npx spica-post-cli <command>`** (zero dependencies, Node.js 18+). If `npx spica-post-cli`
-   is unavailable or not yet installed, fall back to the bundled copy at
-   `node <skill-path>/scripts/spica-post.mjs <command>` (identical commands and flags).
+   Run **`npx spica-cli <command>`** (zero dependencies, Node.js 18+), or install globally (`npm i -g spica-cli`)
+   to use **`spica <command>`**. If `npx spica-cli` is unavailable or not yet installed, fall back to the
+   bundled copy at `node <skill-path>/scripts/spica.mjs <command>` (identical commands and flags).
 
 > **Freshness check**: If more than 30 days have passed since the `last-updated` date above, inform
 > the user that this skill may be outdated and point them to the update options below.
@@ -88,7 +88,7 @@ Two ways to connect — pick whichever fits your environment:
 3. Configure the CLI (saved with `0600` permissions) or set `SPICA_API_KEY`:
 
 ```bash
-npx spica-post-cli setup --key sp_live_xxxxx
+npx spica-cli setup --key sp_live_xxxxx
 ```
 
 **Config priority** (highest to lowest):
@@ -104,7 +104,7 @@ When the CLI reports `missing_api_key` (exit code `2`):
 
 1. **Tell the user to run the setup command** — or connect the hosted OAuth MCP server instead:
    ```bash
-   npx spica-post-cli setup --key sp_live_xxxxx
+   npx spica-cli setup --key sp_live_xxxxx
    ```
 2. **Stop and wait** — do not continue with CLI or REST calls until a valid key is configured.
 3. **DO NOT** search `.env` files, shell histories, macOS Keychain, or other folders for API keys.
@@ -115,53 +115,53 @@ Get a key at: `https://app.spicapost.com/developers`
 
 ## CLI Commands
 
-Prefer `npx spica-post-cli` (or `node <skill-path>/scripts/spica-post.mjs` when offline / local).
+Prefer `npx spica-cli` (or `node <skill-path>/scripts/spica.mjs` when offline / local).
 Pass `--compact` for single-line JSON output, or `help --json` for a machine-readable command spec.
 
 | Command | Description |
 | --- | --- |
-| `npx spica-post-cli setup --key <sp_live_...>` | Save and verify API key (`--local` for project config, `--no-verify` to skip check) |
-| `npx spica-post-cli overview` | Single-call workspace snapshot: brand readiness, accounts, queue, attention items |
-| `npx spica-post-cli usage` | Plan limits, monthly counts and workspace time zone |
-| `npx spica-post-cli brand` | Read saved brand kit (voice, offers, colours, fonts, never-say rules) |
-| `npx spica-post-cli capabilities` | Caption limits, accepted file formats, counts and options per network |
-| `npx spica-post-cli accounts` | List connected social accounts (`id`, `network`, `name`, `status`) |
-| `npx spica-post-cli accounts:connect [--network <net>]` | Get direct account-page links to connect or reconnect networks |
-| `npx spica-post-cli accounts:recent --account <id>` | Read recent published posts for one connected account |
-| `npx spica-post-cli boards --account <id>` | List boards on a connected Pinterest account |
-| `npx spica-post-cli tiktok --account <id>` | Read allowed visibility and interaction settings for a TikTok account |
-| `npx spica-post-cli upload --file ./photo.jpg [--alt "..."]` | Upload local JPEG, PNG, WebP or MP4 directly (returns `media.id`) |
-| `npx spica-post-cli upload:url --url <https://...> [--alt "..."]` | Import a direct public file URL into the media library |
-| `npx spica-post-cli upload-link [--name "..."] [--multiple] [--max-files 1..20]` | Mint an upload page (1 file / 1h default, or `--multiple` for up to 20 files / 24h) |
-| `npx spica-post-cli media` | List uploaded media files and IDs (newest first) |
-| `npx spica-post-cli media:delete --id <media_id>` | Delete an unused media file |
-| `npx spica-post-cli check --network x,bluesky --text "..."` | Validate caption and media counts without saving a draft |
-| `npx spica-post-cli post --text "..." --accounts id1,id2 --draft` | Create and validate a draft without publishing (safe default) |
-| `npx spica-post-cli post --text "..." --accounts id1,id2` | Publish immediately via atomic `POST /v1/posts` (confirm with user first) |
-| `npx spica-post-cli post --text "..." --accounts id1,id2 --schedule "2026-11-30T14:00:00Z"` | Schedule for an exact UTC timestamp |
-| `npx spica-post-cli post --text "..." --accounts id1,id2 --queue` | Schedule into the next free posting queue slot |
-| `npx spica-post-cli post --text "..." --accounts id1,id2 --media m1 --options '{"x":{"firstReply":"..."}}'` | Draft, validate and send with per-network options |
-| `npx spica-post-cli drafts [--search "..."]` | List or search drafts (includes `version` and composer `link`) |
-| `npx spica-post-cli drafts:get --id <draft_id>` | Read one draft in full |
-| `npx spica-post-cli drafts:validate --id <id> --version <n>` | Validate a draft against every target network |
-| `npx spica-post-cli drafts:publish --id <id> --version <n>` | Publish an approved draft now |
-| `npx spica-post-cli drafts:schedule --id <id> --version <n> --at <ISO-UTC>` | Schedule an approved draft for a UTC time |
-| `npx spica-post-cli drafts:queue --id <id> --version <n>` | Add an approved draft to the next free queue slot |
-| `npx spica-post-cli drafts:delete --id <draft_id>` | Delete an unqueued draft |
-| `npx spica-post-cli queue` | View configured queue slots and next open times |
-| `npx spica-post-cli jobs [--state queued\|published\|failed\|unknown]` | List or filter per-account deliveries and receipts |
-| `npx spica-post-cli jobs:get --id <job_id>` | Inspect one delivery (`state`, `error`, `receipt.url`) |
-| `npx spica-post-cli jobs:reschedule --id <job_id> --at <ISO-UTC>` | Move a queued delivery to a new UTC time |
-| `npx spica-post-cli jobs:cancel --id <job_id>` | Cancel a queued delivery |
-| `npx spica-post-cli jobs:retry --id <job_id>` | Retry a failed delivery (never retries `unknown`) |
-| `npx spica-post-cli calendar [--days 14]` | Read local-time calendar, open slots and external events |
-| `npx spica-post-cli results [--days 30] [--source all\|spica\|native]` | Read post metrics, follower growth, short-link clicks, GBP & Search Console (Studio/Pro) |
-| `npx spica-post-cli results:sync [--account <id>]` | Trigger whole-account analytics sync (Studio/Pro) |
-| `npx spica-post-cli short-links` / `short-links:create --url <https://...>` | List or create tracked short links `/l/<code>` (Studio/Pro) |
-| `npx spica-post-cli links` | List link-in-bio pages, visit/click counts and editor links |
-| `npx spica-post-cli webhooks` | List configured signed HTTPS webhook endpoints |
-| `npx spica-post-cli api <METHOD> </v1/...> [--body '{...}']` | Call any of the 132 `/v1/*` routes directly |
-| `npx spica-post-cli help --json` | Print full machine-readable CLI schema and platform options |
+| `npx spica-cli setup --key <sp_live_...>` | Save and verify API key (`--local` for project config, `--no-verify` to skip check) |
+| `npx spica-cli overview` | Single-call workspace snapshot: brand readiness, accounts, queue, attention items |
+| `npx spica-cli usage` | Plan limits, monthly counts and workspace time zone |
+| `npx spica-cli brand` | Read saved brand kit (voice, offers, colours, fonts, never-say rules) |
+| `npx spica-cli capabilities` | Caption limits, accepted file formats, counts and options per network |
+| `npx spica-cli accounts` | List connected social accounts (`id`, `network`, `name`, `status`) |
+| `npx spica-cli accounts:connect [--network <net>]` | Get direct account-page links to connect or reconnect networks |
+| `npx spica-cli accounts:recent --account <id>` | Read recent published posts for one connected account |
+| `npx spica-cli boards --account <id>` | List boards on a connected Pinterest account |
+| `npx spica-cli tiktok --account <id>` | Read allowed visibility and interaction settings for a TikTok account |
+| `npx spica-cli upload --file ./photo.jpg [--alt "..."]` | Upload local JPEG, PNG, WebP or MP4 directly (returns `media.id`) |
+| `npx spica-cli upload:url --url <https://...> [--alt "..."]` | Import a direct public file URL into the media library |
+| `npx spica-cli upload-link [--name "..."] [--multiple] [--max-files 1..20]` | Mint an upload page (1 file / 1h default, or `--multiple` for up to 20 files / 24h) |
+| `npx spica-cli media` | List uploaded media files and IDs (newest first) |
+| `npx spica-cli media:delete --id <media_id>` | Delete an unused media file |
+| `npx spica-cli check --network x,bluesky --text "..."` | Validate caption and media counts without saving a draft |
+| `npx spica-cli post --text "..." --accounts id1,id2 --draft` | Create and validate a draft without publishing (safe default) |
+| `npx spica-cli post --text "..." --accounts id1,id2` | Publish immediately via atomic `POST /v1/posts` (confirm with user first) |
+| `npx spica-cli post --text "..." --accounts id1,id2 --schedule "2026-11-30T14:00:00Z"` | Schedule for an exact UTC timestamp |
+| `npx spica-cli post --text "..." --accounts id1,id2 --queue` | Schedule into the next free posting queue slot |
+| `npx spica-cli post --text "..." --accounts id1,id2 --media m1 --options '{"x":{"firstReply":"..."}}'` | Draft, validate and send with per-network options |
+| `npx spica-cli drafts [--search "..."]` | List or search drafts (includes `version` and composer `link`) |
+| `npx spica-cli drafts:get --id <draft_id>` | Read one draft in full |
+| `npx spica-cli drafts:validate --id <id> --version <n>` | Validate a draft against every target network |
+| `npx spica-cli drafts:publish --id <id> --version <n>` | Publish an approved draft now |
+| `npx spica-cli drafts:schedule --id <id> --version <n> --at <ISO-UTC>` | Schedule an approved draft for a UTC time |
+| `npx spica-cli drafts:queue --id <id> --version <n>` | Add an approved draft to the next free queue slot |
+| `npx spica-cli drafts:delete --id <draft_id>` | Delete an unqueued draft |
+| `npx spica-cli queue` | View configured queue slots and next open times |
+| `npx spica-cli jobs [--state queued\|published\|failed\|unknown]` | List or filter per-account deliveries and receipts |
+| `npx spica-cli jobs:get --id <job_id>` | Inspect one delivery (`state`, `error`, `receipt.url`) |
+| `npx spica-cli jobs:reschedule --id <job_id> --at <ISO-UTC>` | Move a queued delivery to a new UTC time |
+| `npx spica-cli jobs:cancel --id <job_id>` | Cancel a queued delivery |
+| `npx spica-cli jobs:retry --id <job_id>` | Retry a failed delivery (never retries `unknown`) |
+| `npx spica-cli calendar [--days 14]` | Read local-time calendar, open slots and external events |
+| `npx spica-cli results [--days 30] [--source all\|spica\|native]` | Read post metrics, follower growth, short-link clicks, GBP & Search Console (Studio/Pro) |
+| `npx spica-cli results:sync [--account <id>]` | Trigger whole-account analytics sync (Studio/Pro) |
+| `npx spica-cli short-links` / `short-links:create --url <https://...>` | List or create tracked short links `/l/<code>` (Studio/Pro) |
+| `npx spica-cli links` | List link-in-bio pages, visit/click counts and editor links |
+| `npx spica-cli webhooks` | List configured signed HTTPS webhook endpoints |
+| `npx spica-cli api <METHOD> </v1/...> [--body '{...}']` | Call any of the 132 `/v1/*` routes directly |
+| `npx spica-cli help --json` | Print full machine-readable CLI schema and platform options |
 
 ---
 
@@ -346,7 +346,7 @@ Unknown keys or options sent to the wrong network are refused with a plain error
 
 **Example — multi-network draft with per-platform options (CLI):**
 ```bash
-npx spica-post-cli post \
+npx spica-cli post \
   --title "Spring menu launch" \
   --accounts acc_x,acc_li,acc_gbp \
   --text "Our spring menu starts Friday at 8am." \
@@ -385,7 +385,7 @@ npx spica-post-cli post \
    - **Text-only allowed**: `x` (280 weighted chars; links count 23, emoji/CJK count 2), `bluesky` (300 graphemes; images ≤ 2 MB), `linkedin` (3,000 chars), `facebook` (63,206 chars), `threads` (500 chars), `google` (1,500 chars; 0 or 1 photo ≤ 5 MB, no video).
 5. **For sandbox-generated images or files > 3 MB, use `media_upload_link` (or CLI `upload`) — never huge base64.**
    In browser chat apps like Claude, `media_upload_link` gives a one-time page (valid 1 hour) where
-   the user drops the file or a sandbox PUTs raw bytes cleanly. In terminal/Cursor, `npx spica-post-cli upload --file ...`
+   the user drops the file or a sandbox PUTs raw bytes cleanly. In terminal/Cursor, `npx spica-cli upload --file ...`
    sends raw binary bytes straight to `POST /v1/media`.
 6. **Optimistic locking & idempotency:**
    Draft edits require the latest `version` (409 on conflict — re-read with `drafts_get`). Every
@@ -413,7 +413,7 @@ npx spica-post-cli post \
    ```bash
    ffmpeg -i demo.mp4 -ss 00:00:03 -frames:v 1 frame.jpg -y
    ```
-3. Upload media (`npx spica-post-cli upload --file ./demo.mp4 --alt "..."`) or render branded carousel
+3. Upload media (`npx spica-cli upload --file ./demo.mp4 --alt "..."`) or render branded carousel
    slides via MCP `templates_render` and inspect them with `media_view`.
 4. *(Studio/Pro)* Create tracked short links (`short-links:create` / `short_links_save`) so clicks are
    attributed per post — even on X and LinkedIn.
