@@ -1,6 +1,6 @@
 {
   "name": "spica-post",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Draft, schedule, track clicks, connect custom domains, sync calendars, share client review links, manage team approvals and publish social media posts from Claude, in your own brand, once you approve each one.",
   "author": {
     "name": "ML Apps LLC",
@@ -29,7 +29,7 @@
     "bluesky",
     "mcp"
   ],
-  "icon": ".claude-plugin/icon.jpg",
+  "icon": ".claude-plugin/icon.png",
   "privacyPolicyUrl": "https://spicapost.com/legal/privacy/",
   "displayName": "Spica Post",
   "supportUrl": "https://spicapost.com/contact/",

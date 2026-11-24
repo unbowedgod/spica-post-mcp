@@ -2,9 +2,18 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "com.spicapost/spica-post",
   "title": "Spica Post",
-  "description": "Draft and schedule social posts across brands via MCP, track link clicks & Search Console stats, configure Pro custom domains, sync calendars, and manage approvals.",
-  "version": "1.0.4",
+  "description": "Draft, schedule and publish social posts across brands via MCP with approvals, analytics & links.",
+  "version": "1.0.5",
   "websiteUrl": "https://spicapost.com",
+  "icons": [
+    {
+      "src": "https://spicapost.com/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    }
+  ],
   "repository": {
     "url": "https://github.com/unbowedgod/spica-post-mcp",
     "source": "github"

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "spica-post",
+  "version": "1.0.5",
+  "description": "Draft, validate, schedule, queue and track social media posts in your saved brand across connected accounts via Spica Post MCP or CLI.",
+  "author": {
+    "name": "ML Apps LLC",
+    "email": "info@spicapost.com",
+    "url": "https://spicapost.com"
+  },
+  "homepage": "https://spicapost.com/mcp/",
+  "repository": "https://github.com/unbowedgod/spica-post-mcp",
+  "license": "MIT",
+  "keywords": [
+    "social-media",
+    "scheduling",
+    "publishing",
+    "mcp",
+    "cli",
+    "brand",
+    "analytics",
+    "agencies",
+    "x",
+    "linkedin",
+    "bluesky",
+    "instagram",
+    "tiktok",
+    "youtube",
+    "pinterest",
+    "threads",
+    "google-business-profile"
+  ]
+}

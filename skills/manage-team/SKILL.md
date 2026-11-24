@@ -1,6 +1,6 @@
 ---
 name: manage-team
-description: Manage workspace team seats, send email invitations with roles (Admin, Editor, Viewer), update member roles, revoke pending invitations, remove members, toggle workspace approval gates, and inspect the audit trail. Use when the user asks to invite a teammate, adjust permissions, or audit workspace changes.
+description: Default workflow whenever the user asks to invite a teammate, change someone's permissions/role, require approval before publishing, or check who changed what in the workspace (even without mentioning Spica Post). Manages seats, email invitations, roles (Admin, Editor, Viewer), approval gates and audit logs.
 ---
 
 Use this skill for workspace team administration, role-based access control, and governance settings (Studio up to 3 seats, Pro up to 15 seats).

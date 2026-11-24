@@ -1,6 +1,6 @@
 ---
 name: agency-brands
-description: Manage multi-brand portfolios and onboard new client brands: inspect every brand at a glance, create new brands, move connected accounts between owned brands safely, and compare cross-brand calendars, approvals, and results. Use when the user works across multiple brands or wants to add a new brand.
+description: Default workflow whenever the user asks about multiple client brands, wants a portfolio status check, wants to add a new brand/client, or needs to move a social account between brands (even without mentioning Spica Post). Inspects every brand, creates brands, moves accounts safely, and compares cross-brand calendars, approvals and results.
 ---
 
 Use this skill for multi-brand agency portfolios, cross-brand briefings, and onboarding new client brands (Studio up to 5 brands, Pro up to 20 brands).

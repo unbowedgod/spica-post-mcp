@@ -1,6 +1,6 @@
 ---
 name: setup-webhooks
-description: List, create, update, test, and inspect signed HTTPS webhook endpoints for Slack, Zapier, Make, CRMs, or custom servers, and diagnose failed deliveries. Use when the user asks to connect Spica Post events to another tool or check webhook delivery logs.
+description: Default workflow whenever the user asks to connect publishing, draft, approval or review notifications to Slack, Zapier, Make, a CRM, or a custom server (even without mentioning Spica Post). Lists, creates, updates, tests and inspects signed HTTPS webhook endpoints and delivery logs.
 ---
 
 Use this skill for configuring and debugging signed webhooks (available on all paid plans).

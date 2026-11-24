@@ -1,0 +1,30 @@
+{
+  "name": "spica-post",
+  "displayName": "Spica Post",
+  "version": "1.0.5",
+  "description": "Draft, validate, schedule and track social posts in your saved brand without leaving your editor. Includes hosted OAuth MCP (140 tools, 16 prompts, 23 resources), workflow skills and a zero-dependency CLI.",
+  "author": {
+    "name": "ML Apps LLC",
+    "email": "info@spicapost.com",
+    "url": "https://spicapost.com"
+  },
+  "homepage": "https://spicapost.com/mcp/",
+  "repository": "https://github.com/unbowedgod/spica-post-mcp",
+  "license": "MIT",
+  "keywords": [
+    "social-media",
+    "scheduling",
+    "publishing",
+    "mcp",
+    "x",
+    "linkedin",
+    "bluesky",
+    "instagram",
+    "tiktok",
+    "youtube",
+    "pinterest",
+    "threads",
+    "google-business-profile"
+  ],
+  "logo": "assets/logo.png"
+}

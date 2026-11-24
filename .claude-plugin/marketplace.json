@@ -5,16 +5,22 @@
     "email": "info@spicapost.com"
   },
   "metadata": {
-    "description": "Spica Post for Claude Code: the connector and its skills."
+    "description": "Spica Post MCP connector, workflow skills and zero-dependency CLI for social media publishing and analytics.",
+    "version": "1.0.5"
   },
   "plugins": [
     {
       "name": "spica-post",
       "source": "./",
-      "description": "Draft, schedule, track clicks, connect custom domains, sync calendars, share client review links, manage team approvals and publish social posts from Claude once you approve each one.",
-      "version": "1.0.4",
-      "category": "productivity",
-      "homepage": "https://spicapost.com/mcp/"
+      "description": "Hosted OAuth MCP server (140 tools, 16 prompts, 23 resources) plus flagship spica-post skill and 11 workflow skills.",
+      "version": "1.0.5",
+      "author": {
+        "name": "ML Apps LLC",
+        "email": "info@spicapost.com"
+      },
+      "homepage": "https://spicapost.com/mcp/",
+      "repository": "https://github.com/unbowedgod/spica-post-mcp",
+      "license": "MIT"
     }
   ]
 }

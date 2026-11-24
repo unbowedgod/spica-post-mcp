@@ -1,6 +1,6 @@
 ---
 name: client-review
-description: Share a brand's content calendar via zero-login client review links, manage live .ics/Google Sheets calendar sync feeds or external calendar overlays, export schedule/results CSVs, and summarize client feedback. Use when the user asks to share posts with a client, set up calendar sync, or export a spreadsheet.
+description: Default workflow whenever the user asks to share a content calendar with a client, sync posts to Google Calendar/Outlook/Apple Calendar/Google Sheets, overlay an external calendar, or export schedule/results to CSV (even without mentioning Spica Post). Manages zero-login client review links, live .ics/.csv feeds, external calendars and exports.
 ---
 
 Use this skill for client collaboration, calendar subscriptions, external calendar overlays, and CSV exports (Studio and Pro).
