@@ -2,6 +2,8 @@
 
 # Spica Post Agent Plugin & MCP Server
 
+[![Spica Post MCP connector](https://glama.ai/mcp/connectors/com.spicapost/spica-post/badges/score.svg)](https://glama.ai/mcp/connectors/com.spicapost/spica-post)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-1.0.8-green.svg)]()
 [![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-3B9AF8)](https://spicapost.com/mcp/)
