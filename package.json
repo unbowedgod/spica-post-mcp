@@ -1,7 +1,7 @@
 {
   "name": "spica-cli",
-  "version": "1.0.0",
-  "description": "Zero-dependency CLI & portable Agent Plugin for Spica Post — draft, schedule, queue and track social posts via the /v1 REST API.",
+  "version": "1.2.1",
+  "description": "Zero-dependency CLI & portable Agent Plugin for Spica Post: draft, schedule, queue and track social posts via the /v1 REST API.",
   "type": "module",
   "license": "MIT",
   "author": "ML Apps LLC <info@spicapost.com>",

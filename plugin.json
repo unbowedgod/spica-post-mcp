@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "spica-post",
-  "version": "1.0.5",
+  "version": "1.0.8",
   "description": "Draft, validate, schedule, queue and track social media posts in your saved brand across connected accounts via Spica Post MCP or CLI.",
   "author": {
     "name": "ML Apps LLC",

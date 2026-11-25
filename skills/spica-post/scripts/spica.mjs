@@ -8,7 +8,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const VERSION = '1.0.0';
+export const VERSION = '1.2.1';
 const DEFAULT_BASE_URL = 'https://app.spicapost.com';
 const DEVELOPERS_URL = 'https://app.spicapost.com/developers';
 const MCP_URL = 'https://app.spicapost.com/mcp';
@@ -28,6 +28,7 @@ const KNOWN_NETWORKS = new Set([
   'x',
   'linkedin',
   'bluesky',
+  'mastodon',
   'tiktok',
   'youtube',
   'pinterest',
@@ -55,13 +56,16 @@ export const HELP_SPEC = Object.freeze({
     { name: 'capabilities', flags: [], description: 'Caption limits, file formats, counts and options for every network.' },
     { name: 'accounts', flags: [], description: 'List connected social accounts (id, network, name, status).' },
     { name: 'accounts:connect', flags: ['--network <name>'], description: 'Get account-page links to connect or reconnect social networks.' },
+    { name: 'accounts:hold', flags: ['--account <id>', '--hours <1..168>', '--reason <text>'], description: 'Pause an account queue for 1 to 168 hours (default 24h) so scheduled posts wait safely.' },
+    { name: 'accounts:resume', flags: ['--account <id>'], description: 'Clear an account queue hold and wake held deliveries.' },
     { name: 'accounts:recent', flags: ['--account <id>'], description: 'Read recent published posts for a connected account.' },
     { name: 'boards', flags: ['--account <id>'], description: 'List boards on a connected Pinterest account.' },
     { name: 'tiktok', flags: ['--account <id>'], description: 'Read posting rules and limits for a connected TikTok account.' },
     { name: 'upload', flags: ['--file <path>', '--name <name>', '--alt <text>'], description: 'Upload a local JPEG, PNG, WebP or MP4 file directly to /v1/media.' },
     { name: 'upload:url', flags: ['--url <https://...>', '--name <name>', '--alt <text>'], description: 'Import a direct public image or video URL into the media library.' },
     { name: 'upload-link', flags: ['--name <name>', '--alt <text>', '--multiple', '--max-files <1..20>'], description: 'Create an upload link (1 file / 1h default, or --multiple / --max-files for up to 20 files / 24h).' },
-    { name: 'media', flags: [], description: 'List uploaded media files and ids.' },
+    { name: 'media', flags: [], description: 'List uploaded media files and ids (newest first).' },
+    { name: 'media:update', flags: ['--id <media_id>', '--name <name>', '--alt <text>', '--tags <t1,t2>'], description: 'Update a media file name, alt text, or tags (pass --tags "" to clear).' },
     { name: 'media:delete', flags: ['--id <media_id>'], description: 'Delete an unused media file.' },
     { name: 'check', flags: ['--network <net1,net2>', '--text <caption...>', '--images <n>', '--videos <n>', '--story'], description: 'Validate a caption and media counts against network rules without saving.' },
     {
@@ -84,25 +88,35 @@ export const HELP_SPEC = Object.freeze({
     },
     { name: 'drafts', flags: ['--search <query>', '--network <net>', '--account <id>', '--limit <n>'], description: 'List or search saved drafts.' },
     { name: 'drafts:get', flags: ['--id <draft_id>'], description: 'Read one draft with its version, variants and composer link.' },
-    { name: 'drafts:validate', flags: ['--id <draft_id>', '--version <n>'], description: 'Check a draft against every target network.' },
+    { name: 'drafts:validate', flags: ['--id <draft_id>', '--version <n>', '--at <ISO-8601-UTC>'], description: 'Check a draft against every target network and optionally preview calendar pacing laws.' },
     { name: 'drafts:publish', flags: ['--id <draft_id>', '--version <n>', '--idempotency-key <key>'], description: 'Publish an approved draft now.' },
     { name: 'drafts:schedule', flags: ['--id <draft_id>', '--version <n>', '--at <ISO-8601-UTC>', '--idempotency-key <key>'], description: 'Schedule an approved draft for a UTC timestamp.' },
     { name: 'drafts:queue', flags: ['--id <draft_id>', '--version <n>', '--idempotency-key <key>'], description: 'Put an approved draft into the next free queue slot.' },
     { name: 'drafts:delete', flags: ['--id <draft_id>'], description: 'Delete a draft not currently queued.' },
-    { name: 'queue', flags: [], description: 'Read configured posting queue slots and next open times.' },
-    { name: 'jobs', flags: ['--state <state>', '--network <net>', '--account <id>', '--draft <id>', '--limit <n>'], description: 'List or filter scheduled, published, failed, unknown or cancelled deliveries.' },
+    { name: 'queue', flags: [], description: 'Read configured posting queue slots, next open times and active pacing rules.' },
+    { name: 'queue:rules', flags: [], description: 'Read per-brand calendar pacing rules (minGapHours, separateLanguagesByDay, noRepeatDays, avoidBackToBackPillar).' },
+    { name: 'queue:rules:set', flags: ['--min-gap-hours <0..168>', '--separate-languages <true|false>', '--no-repeat-days <0..365>', '--avoid-back-to-back-pillar <true|false>'], description: 'Update per-brand calendar pacing rules enforced by queue_add and queue_shuffle.' },
+    { name: 'jobs', flags: ['--state <state>', '--kind <failure_kind>', '--network <net>', '--account <id>', '--draft <id>', '--limit <n>'], description: 'List or filter scheduled, published, failed, unknown or cancelled deliveries.' },
     { name: 'jobs:get', flags: ['--id <job_id>'], description: 'Read one delivery and its receipt or error.' },
     { name: 'jobs:reschedule', flags: ['--id <job_id>', '--at <ISO-8601-UTC>'], description: 'Move a queued delivery to a new UTC time.' },
     { name: 'jobs:cancel', flags: ['--id <job_id>'], description: 'Cancel a queued delivery.' },
     { name: 'jobs:retry', flags: ['--id <job_id>', '--at <ISO-8601-UTC>', '--idempotency-key <key>'], description: 'Retry a failed delivery (never retries unknown deliveries).' },
     { name: 'calendar', flags: ['--days <n>', '--from <YYYY-MM-DD>'], description: 'Read local-time content calendar with open slots and external events.' },
-    { name: 'results', flags: ['--days <7|30|90>', '--source <all|spica|native>'], description: 'Read post performance, audience growth, short-link clicks, GBP and Search Console stats (Studio/Pro).' },
+    { name: 'results', flags: ['--days <7|30|90>', '--source <all|spica|native>'], description: 'Read post performance (including byTopic, byPillar and failures), audience growth, short-link clicks, GBP and Search Console stats (Studio/Pro).' },
+    { name: 'growth', flags: ['--days <7|30|90>', '--source <all|spica|native>'], description: 'Read one growth-state brief per brand: per-channel stage, health, measured winners and concrete next test (Studio/Pro).' },
     { name: 'results:sync', flags: ['--account <id>'], description: 'Trigger whole-account analytics sync for native posts and follower snapshots (Studio/Pro).' },
     { name: 'short-links', flags: [], description: 'List tracked short links and click counts (Studio/Pro).' },
     { name: 'short-links:create', flags: ['--url <https://...>', '--label <text>', '--draft <id>'], description: 'Create a tracked short link (Studio/Pro).' },
     { name: 'links', flags: [], description: 'List link-in-bio pages, stats and editor links.' },
+    { name: 'inbox', flags: ['--status <open|archived|all>', '--network <net>', '--kind <comment|review>', '--limit <n>'], description: 'List comments and Google reviews in the Unified Inbox (Studio/Pro).' },
+    { name: 'inbox:sync', flags: ['--account <id>'], description: 'Refresh Unified Inbox comments and Google reviews (Studio/Pro).' },
+    { name: 'inbox:reply', flags: ['--id <item_id>', '--text <reply...>', '--template <id>'], description: 'Reply publicly to a comment or Google review (Studio/Pro).' },
+    { name: 'inbox:replies', flags: [], description: 'List reusable saved replies for the Unified Inbox (Studio/Pro).' },
+    { name: 'crossposts', flags: [], description: 'List auto-crosspost mirror rules and status (Studio/Pro).' },
+    { name: 'autoreposts', flags: [], description: 'List native auto-repost rules on Bluesky, Mastodon and X (Studio/Pro).' },
+    { name: 'digest', flags: [], description: 'Read Weekly Executive Digest settings and latest summary (Studio/Pro).' },
     { name: 'webhooks', flags: [], description: 'List configured signed HTTPS webhook endpoints.' },
-    { name: 'api', flags: ['<METHOD>', '<path>', '--body <json>'], description: 'Call any of the 132 /v1 REST routes directly.' },
+    { name: 'api', flags: ['<METHOD>', '<path>', '--body <json>'], description: 'Call any of the 166 /v1 REST routes directly.' },
     { name: 'help', flags: ['--json'], description: 'Show commands, flags and platform options (pass --json for machine-readable output).' },
   ],
   platformOptions: {
@@ -153,6 +167,15 @@ export const HELP_SPEC = Object.freeze({
       start: '"YYYY-MM-DD" or "YYYY-MM-DDTHH:MM" (business local time; offer/event)',
       end: '"YYYY-MM-DD" or "YYYY-MM-DDTHH:MM" (business local time; offer/event)',
       offer: '{ code?: <=58, url?: "https://...", terms?: <=5000 } (offer only)',
+    },
+    bluesky: {
+      threadPosts: 'string[] (1 to 24 follow-up texts chained as replies, <= 300 graphemes / 3000 UTF-8 bytes each)',
+    },
+    mastodon: {
+      visibility: '"public" | "unlisted" | "private"',
+      spoilerText: 'string (optional content warning)',
+      language: 'string (ISO 639-1 code, e.g. "en" or "es")',
+      threadPosts: 'string[] (1 to 24 follow-up texts chained as replies, <= 500 chars each)',
     },
     tiktok: {
       note: 'Options are never sent via API/CLI; the owner sets privacy/duet/stitch/commercial choices on the /tiktok screen link returned in choose.',
@@ -380,7 +403,7 @@ async function apiRequest(cfg, fetchImpl, method, routePath, { body, headers = {
 
 function formatHelpText() {
   const lines = [
-    `spica-cli v${VERSION} — CLI for Spica Post (/v1 REST API)`,
+    `spica-cli v${VERSION}: CLI for Spica Post (/v1 REST API)`,
     '',
     'Usage:',
     '  npx github:unbowedgod/spica-post-mcp <command> [flags]',
@@ -514,6 +537,27 @@ export async function runCli(
         return 0;
       }
 
+      case 'accounts:hold': {
+        const id = encodeURIComponent(requireFlag(flags, 'account'));
+        const body = {};
+        if (flags.hours !== undefined) {
+          const hours = Number(flags.hours);
+          if (!Number.isInteger(hours) || hours < 1 || hours > 168) {
+            throw new CliError('--hours must be an integer from 1 to 168.', { code: 'invalid_arguments' });
+          }
+          body.hours = hours;
+        }
+        if (typeof flags.reason === 'string' && flags.reason.trim()) body.reason = flags.reason.trim();
+        emit(await req('POST', `/v1/accounts/${id}/hold`, { body }));
+        return 0;
+      }
+
+      case 'accounts:resume': {
+        const id = encodeURIComponent(requireFlag(flags, 'account'));
+        emit(await req('DELETE', `/v1/accounts/${id}/hold`));
+        return 0;
+      }
+
       case 'accounts:recent': {
         const accountId = encodeURIComponent(requireFlag(flags, 'account'));
         emit(await req('GET', `/v1/accounts/${accountId}/recent-posts`));
@@ -593,6 +637,19 @@ export async function runCli(
       case 'media':
         emit(await req('GET', '/v1/media'));
         return 0;
+
+      case 'media:update': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        const body = {};
+        if (typeof flags.name === 'string') body.name = flags.name;
+        if (typeof flags.alt === 'string') body.alt = flags.alt;
+        if (typeof flags.tags === 'string') body.tags = splitList(flags.tags);
+        if (!Object.keys(body).length) {
+          throw new CliError('Provide at least one of --name, --alt, or --tags.', { code: 'missing_flag' });
+        }
+        emit(await req('PATCH', `/v1/media/${id}`, { body }));
+        return 0;
+      }
 
       case 'media:delete': {
         const id = encodeURIComponent(requireFlag(flags, 'id'));
@@ -756,7 +813,9 @@ export async function runCli(
       case 'drafts:validate': {
         const id = encodeURIComponent(requireFlag(flags, 'id'));
         const version = requireIntFlag(flags, 'version');
-        emit(await req('POST', `/v1/drafts/${id}/validate`, { body: { version } }));
+        const body = { version };
+        if (typeof flags.at === 'string' && flags.at.trim()) body.scheduledAt = flags.at.trim();
+        emit(await req('POST', `/v1/drafts/${id}/validate`, { body }));
         return 0;
       }
 
@@ -798,11 +857,53 @@ export async function runCli(
         emit(await req('GET', '/v1/queue'));
         return 0;
 
+      case 'queue:rules':
+        emit(await req('GET', '/v1/queue/rules'));
+        return 0;
+
+      case 'queue:rules:set': {
+        const body = {};
+        const parseBool = (val, flagName) => {
+          if (val === true || val === 'true') return true;
+          if (val === false || val === 'false') return false;
+          throw new CliError(`--${flagName} must be true or false.`, { code: 'invalid_arguments' });
+        };
+        if (flags['min-gap-hours'] !== undefined) {
+          const n = Number(flags['min-gap-hours']);
+          if (!Number.isInteger(n) || n < 0 || n > 168) {
+            throw new CliError('--min-gap-hours must be an integer from 0 to 168.', { code: 'invalid_arguments' });
+          }
+          body.minGapHours = n;
+        }
+        if (flags['no-repeat-days'] !== undefined) {
+          const n = Number(flags['no-repeat-days']);
+          if (!Number.isInteger(n) || n < 0 || n > 365) {
+            throw new CliError('--no-repeat-days must be an integer from 0 to 365.', { code: 'invalid_arguments' });
+          }
+          body.noRepeatDays = n;
+        }
+        if (flags['separate-languages'] !== undefined) {
+          body.separateLanguagesByDay = parseBool(flags['separate-languages'], 'separate-languages');
+        }
+        if (flags['avoid-back-to-back-pillar'] !== undefined) {
+          body.avoidBackToBackPillar = parseBool(flags['avoid-back-to-back-pillar'], 'avoid-back-to-back-pillar');
+        }
+        if (!Object.keys(body).length) {
+          throw new CliError(
+            'Pass at least one flag: --min-gap-hours, --separate-languages, --no-repeat-days or --avoid-back-to-back-pillar.',
+            { code: 'missing_flag' },
+          );
+        }
+        emit(await req('PUT', '/v1/queue/rules', { body }));
+        return 0;
+      }
+
       case 'jobs': {
-        const hasFilter = flags.state || flags.network || flags.account || flags.draft || flags.limit;
+        const hasFilter = flags.state || flags.kind || flags.network || flags.account || flags.draft || flags.limit;
         if (hasFilter) {
           const qs = buildQuery({
             state: typeof flags.state === 'string' ? flags.state : undefined,
+            kind: typeof flags.kind === 'string' ? flags.kind : undefined,
             network: typeof flags.network === 'string' ? flags.network : undefined,
             accountId: typeof flags.account === 'string' ? flags.account : undefined,
             draftId: typeof flags.draft === 'string' ? flags.draft : undefined,
@@ -864,6 +965,15 @@ export async function runCli(
         return 0;
       }
 
+      case 'growth': {
+        const qs = buildQuery({
+          days: typeof flags.days === 'string' ? flags.days : undefined,
+          source: typeof flags.source === 'string' ? flags.source : undefined,
+        });
+        emit(await req('GET', `/v1/growth${qs}`));
+        return 0;
+      }
+
       case 'results:sync': {
         const body = typeof flags.account === 'string' && flags.account.trim() ? { accountId: flags.account.trim() } : {};
         emit(await req('POST', '/v1/results/sync', { body }));
@@ -884,6 +994,50 @@ export async function runCli(
 
       case 'links':
         emit(await req('GET', '/v1/links'));
+        return 0;
+
+      case 'inbox': {
+        const qs = buildQuery({
+          status: typeof flags.status === 'string' ? flags.status : undefined,
+          network: typeof flags.network === 'string' ? flags.network : undefined,
+          kind: typeof flags.kind === 'string' ? flags.kind : undefined,
+          limit: typeof flags.limit === 'string' ? flags.limit : undefined,
+        });
+        emit(await req('GET', `/v1/inbox${qs}`));
+        return 0;
+      }
+
+      case 'inbox:sync': {
+        const body = typeof flags.account === 'string' && flags.account.trim() ? { accountId: flags.account.trim() } : {};
+        emit(await req('POST', '/v1/inbox/sync', { body }));
+        return 0;
+      }
+
+      case 'inbox:reply': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        const text = requireFlag(flags, 'text');
+        const body = {
+          text,
+          ...(typeof flags.template === 'string' && flags.template.trim() ? { templateId: flags.template.trim() } : {}),
+        };
+        emit(await req('POST', `/v1/inbox/${id}/reply`, { body }));
+        return 0;
+      }
+
+      case 'inbox:replies':
+        emit(await req('GET', '/v1/inbox/replies'));
+        return 0;
+
+      case 'crossposts':
+        emit(await req('GET', '/v1/crossposts'));
+        return 0;
+
+      case 'autoreposts':
+        emit(await req('GET', '/v1/autoreposts'));
+        return 0;
+
+      case 'digest':
+        emit(await req('GET', '/v1/digest'));
         return 0;
 
       case 'webhooks':

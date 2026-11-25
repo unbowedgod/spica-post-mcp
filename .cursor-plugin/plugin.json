@@ -1,8 +1,8 @@
 {
   "name": "spica-post",
   "displayName": "Spica Post",
-  "version": "1.0.5",
-  "description": "Draft, validate, schedule and track social posts in your saved brand without leaving your editor. Includes hosted OAuth MCP (140 tools, 16 prompts, 23 resources), workflow skills and a zero-dependency CLI.",
+  "version": "1.0.8",
+  "description": "Draft, validate, schedule and track social posts in your saved brand without leaving your editor. Includes hosted OAuth MCP (175 tools, 17 prompts, 28 resources), 15 workflow skills and a zero-dependency CLI.",
   "author": {
     "name": "ML Apps LLC",
     "email": "info@spicapost.com",
