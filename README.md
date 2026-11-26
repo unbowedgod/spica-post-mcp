@@ -8,6 +8,7 @@
 [![Version](https://img.shields.io/badge/version-1.0.8-green.svg)]()
 [![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-3B9AF8)](https://spicapost.com/mcp/)
 [![REST API](https://img.shields.io/badge/REST_API-166_routes-1F2A37)](https://spicapost.com/developers/)
+[![Listed on Electra Index](https://electraindex.com/api/badge/spica-post)](https://electraindex.com/mcp/spica-post?utm_source=badge&utm_campaign=listing)
 
 Give your AI assistant or coding agent full social media publishing, brand voice, asset library, unified inbox, auto-crossposting, link pages, tracked short links, calendar sync, approvals, structured failure recovery and growth analytics through [Spica Post](https://spicapost.com).
 
