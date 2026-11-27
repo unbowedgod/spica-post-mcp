@@ -101,6 +101,7 @@ export const HELP_SPEC = Object.freeze({
     { name: 'jobs:reschedule', flags: ['--id <job_id>', '--at <ISO-8601-UTC>'], description: 'Move a queued delivery to a new UTC time.' },
     { name: 'jobs:cancel', flags: ['--id <job_id>'], description: 'Cancel a queued delivery.' },
     { name: 'jobs:retry', flags: ['--id <job_id>', '--at <ISO-8601-UTC>', '--idempotency-key <key>'], description: 'Retry a failed delivery (never retries unknown deliveries).' },
+    { name: 'jobs:fix-retry', flags: ['--id <job_id>', '--text <text>', '--at <ISO-8601-UTC>', '--idempotency-key <key>'], description: 'Edit a failed delivery and queue a fresh retry in one step.' },
     { name: 'calendar', flags: ['--days <n>', '--from <YYYY-MM-DD>'], description: 'Read local-time content calendar with open slots and external events.' },
     { name: 'results', flags: ['--days <7|30|90>', '--source <all|spica|native>'], description: 'Read post performance (including byTopic, byPillar and failures), audience growth, short-link clicks, GBP and Search Console stats (Studio/Pro).' },
     { name: 'growth', flags: ['--days <7|30|90>', '--source <all|spica|native>'], description: 'Read one growth-state brief per brand: per-channel stage, health, measured winners and concrete next test (Studio/Pro).' },
@@ -111,9 +112,49 @@ export const HELP_SPEC = Object.freeze({
     { name: 'inbox', flags: ['--status <open|archived|all>', '--network <net>', '--kind <comment|review>', '--limit <n>'], description: 'List comments and Google reviews in the Unified Inbox (Studio/Pro).' },
     { name: 'inbox:sync', flags: ['--account <id>'], description: 'Refresh Unified Inbox comments and Google reviews (Studio/Pro).' },
     { name: 'inbox:reply', flags: ['--id <item_id>', '--text <reply...>', '--template <id>'], description: 'Reply publicly to a comment or Google review (Studio/Pro).' },
+    { name: 'inbox:moderate', flags: ['--id <item_id>', '--action <hide|unhide|like|delete>'], description: 'Moderate an inbox comment: hide/unhide/delete (Instagram/Facebook) or like (Facebook/Bluesky).' },
     { name: 'inbox:replies', flags: [], description: 'List reusable saved replies for the Unified Inbox (Studio/Pro).' },
     { name: 'crossposts', flags: [], description: 'List auto-crosspost mirror rules and status (Studio/Pro).' },
     { name: 'autoreposts', flags: [], description: 'List native auto-repost rules on Bluesky, Mastodon and X (Studio/Pro).' },
+    { name: 'connect-links', flags: [], description: 'List branded zero-login client connect links (Studio/Pro/Agency).' },
+    { name: 'connect-links:create', flags: ['--title <name>', '--client <name>', '--networks <net1,net2>', '--days <1..90>', '--return-url <https://...>'], description: 'Create a branded client connect link for zero-login client account onboarding.' },
+    { name: 'connect-links:delete', flags: ['--id <link_id>'], description: 'Revoke a client connect link by id.' },
+    { name: 'portals', flags: [], description: 'List unified branded zero-login client portals (Studio/Pro/Agency).' },
+    { name: 'portals:create', flags: ['--title <name>', '--client <name>', '--welcome <note>', '--target-posts <n>', '--target-articles <n>', '--days <1..365>'], description: 'Create a unified branded client portal (/portal/<token>).' },
+    { name: 'portals:delete', flags: ['--id <portal_id>'], description: 'Revoke a client portal by id.' },
+    { name: 'contacts', flags: ['--search <query>', '--stage <stage>', '--tag <tag>', '--limit <n>'], description: 'List or filter Marketing CRM contacts (Studio/Pro/Agency).' },
+    { name: 'contacts:save', flags: ['--name <text>', '--email <addr>', '--company <text>', '--stage <stage>', '--tags <t1,t2>'], description: 'Create or update a Marketing CRM contact (dedupes by email).' },
+    { name: 'lead-forms', flags: [], description: 'List zero-JS lead capture forms (/form/<id>).' },
+    { name: 'campaigns', flags: [], description: 'List marketing campaigns.' },
+    { name: 'campaigns:report', flags: ['--id <campaign_id>'], description: 'Read campaign funnel attribution (posts, clicks, leads, conversions, value).' },
+    { name: 'conversions:record', flags: ['--event <lead|booking|purchase|call>', '--campaign <id>', '--contact <id>', '--value-cents <n>', '--currency <ISO>'], description: 'Record a conversion event for campaign attribution.' },
+    { name: 'broadcasts', flags: [], description: 'List owned email broadcasts and subscriber counts (Studio/Pro/Agency).' },
+    { name: 'broadcasts:save', flags: ['--subject <text>', '--body <markdown>', '--article <id>', '--stages <s1,s2>', '--tags <t1,t2>'], description: 'Create or update an email broadcast draft (supports Blog-to-Email via --article).' },
+    { name: 'broadcasts:send', flags: ['--id <broadcast_id>'], description: 'Send a draft email broadcast to its matching CRM segment.' },
+    { name: 'sequences', flags: [], description: 'List automated lead-form welcome and drip email sequences (Studio/Pro/Agency).' },
+    { name: 'sequences:save', flags: ['--name <title>', '--trigger <any_form|lead_form|tag>', '--form <id>', '--tag <tag>', '--subject <text>', '--body <markdown>', '--delay <minutes>'], description: 'Create an automated welcome or drip email sequence.' },
+    { name: 'sequences:enroll', flags: ['--id <sequence_id>', '--contact <contact_id>'], description: 'Enroll a subscribed CRM contact in an email sequence.' },
+    { name: 'sequences:delete', flags: ['--id <sequence_id>'], description: 'Delete an automated email sequence by id.' },
+    { name: 'conversion-hooks', flags: [], description: 'List inbound conversion auto-ingest webhooks (Stripe, Calendly, Cal.com, custom).' },
+    { name: 'conversion-hooks:create', flags: ['--name <label>', '--source <stripe|calendly|calcom|custom>', '--campaign <id>', '--secret <hmac_secret>'], description: 'Create an inbound conversion webhook URL (/hooks/conversions/<token>).' },
+    { name: 'conversion-hooks:delete', flags: ['--id <hook_id>'], description: 'Delete an inbound conversion webhook by id.' },
+    { name: 'evergreen', flags: [], description: 'List evergreen content recycling queues (Studio/Pro/Agency).' },
+    { name: 'evergreen:save', flags: ['--name <title>', '--accounts <id1,id2>', '--tag <tag>', '--cadence <days>', '--cooldown <days>', '--mode <queue|draft>'], description: 'Create an evergreen content recycling queue.' },
+    { name: 'evergreen:run', flags: ['--id <rule_id>'], description: 'Recycle the next eligible evergreen post immediately.' },
+    { name: 'evergreen:delete', flags: ['--id <rule_id>'], description: 'Delete an evergreen recycling queue by id.' },
+    { name: 'reports:schedules', flags: [], description: 'List scheduled white-label client email reports (Studio/Pro/Agency).' },
+    { name: 'reports:schedules:create', flags: ['--name <title>', '--cadence <weekly|monthly>', '--recipients <a@b,c@d>', '--days <7|30|90>', '--white-label'], description: 'Create a scheduled weekly or monthly client email report.' },
+    { name: 'reports:schedules:send', flags: ['--id <schedule_id>'], description: 'Send a scheduled client report immediately.' },
+    { name: 'reports:schedules:delete', flags: ['--id <schedule_id>'], description: 'Delete a scheduled client report by id.' },
+    { name: 'rss', flags: [], description: 'List RSS/Atom auto-post feeds and plan caps (Studio/Pro/Agency).' },
+    { name: 'rss:add', flags: ['--url <https://...>', '--accounts <id1,id2>', '--name <label>', '--mode <draft|schedule|publish>', '--poll <minutes>', '--delay <minutes>', '--template <text>'], description: 'Watch an RSS or Atom feed and auto-create drafts, scheduled posts or live posts.' },
+    { name: 'rss:sync', flags: ['--id <feed_id>'], description: 'Poll one RSS feed (with --id) or all enabled RSS feeds immediately.' },
+    { name: 'rss:delete', flags: ['--id <feed_id>'], description: 'Remove an RSS auto-post feed by id.' },
+    { name: 'wordpress', flags: [], description: 'Check connected WordPress site status (Studio/Pro/Agency).' },
+    { name: 'wordpress:connect', flags: ['--url <https://...>', '--user <username>', '--password <app-password>', '--status <draft|pending|publish>'], description: 'Connect a self-hosted WordPress site via Application Password.' },
+    { name: 'wordpress:taxonomies', flags: [], description: 'List categories and tags on the connected WordPress site.' },
+    { name: 'wordpress:publish', flags: ['--article <id>', '--title <text>', '--body <markdown>', '--status <draft|pending|publish>', '--categories <1,2>', '--tags <1,2>', '--at <ISO-8601-UTC>'], description: 'Publish a Spica Post article or standalone Markdown post to WordPress.' },
+    { name: 'wordpress:disconnect', flags: [], description: 'Disconnect the saved WordPress site from this workspace.' },
     { name: 'digest', flags: [], description: 'Read Weekly Executive Digest settings and latest summary (Studio/Pro).' },
     { name: 'webhooks', flags: [], description: 'List configured signed HTTPS webhook endpoints.' },
     { name: 'api', flags: ['<METHOD>', '<path>', '--body <json>'], description: 'Call any of the 166 /v1 REST routes directly.' },
@@ -1024,6 +1065,13 @@ export async function runCli(
         return 0;
       }
 
+      case 'inbox:moderate': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        const action = requireFlag(flags, 'action');
+        emit(await req('POST', `/v1/inbox/${id}/moderate`, { body: { action } }));
+        return 0;
+      }
+
       case 'inbox:replies':
         emit(await req('GET', '/v1/inbox/replies'));
         return 0;
@@ -1034,6 +1082,337 @@ export async function runCli(
 
       case 'autoreposts':
         emit(await req('GET', '/v1/autoreposts'));
+        return 0;
+
+      case 'connect-links':
+        emit(await req('GET', '/v1/connect-links'));
+        return 0;
+
+      case 'connect-links:create': {
+        const body = { title: requireFlag(flags, 'title') };
+        if (typeof flags.client === 'string' && flags.client.trim()) body.clientName = flags.client.trim();
+        const nets = splitList(typeof flags.networks === 'string' ? flags.networks : '');
+        if (nets.length) body.networks = nets;
+        if (flags.days !== undefined) body.expiresInDays = requireIntFlag(flags, 'days');
+        if (typeof flags['return-url'] === 'string' && flags['return-url'].trim()) body.returnUrl = flags['return-url'].trim();
+        emit(await req('POST', '/v1/connect-links', { body }));
+        return 0;
+      }
+
+      case 'connect-links:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/connect-links/${id}`));
+        return 0;
+      }
+
+      case 'portals':
+        emit(await req('GET', '/v1/portals'));
+        return 0;
+
+      case 'portals:create': {
+        const body = { title: requireFlag(flags, 'title') };
+        if (typeof flags.client === 'string' && flags.client.trim()) body.clientName = flags.client.trim();
+        if (typeof flags.welcome === 'string' && flags.welcome.trim()) body.welcomeNote = flags.welcome.trim();
+        const retainer = {};
+        if (flags['target-posts'] !== undefined) retainer.targetPosts = Number(flags['target-posts']);
+        if (flags['target-articles'] !== undefined) retainer.targetArticles = Number(flags['target-articles']);
+        if (Object.keys(retainer).length) body.retainer = retainer;
+        if (flags.days !== undefined) body.expiresInDays = requireIntFlag(flags, 'days');
+        emit(await req('POST', '/v1/portals', { body }));
+        return 0;
+      }
+
+      case 'portals:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/portals/${id}`));
+        return 0;
+      }
+
+      case 'contacts': {
+        const qs = buildQuery({
+          search: typeof flags.search === 'string' ? flags.search : undefined,
+          stage: typeof flags.stage === 'string' ? flags.stage : undefined,
+          tag: typeof flags.tag === 'string' ? flags.tag : undefined,
+          limit: typeof flags.limit === 'string' ? flags.limit : undefined,
+        });
+        emit(await req('GET', `/v1/contacts${qs}`));
+        return 0;
+      }
+
+      case 'contacts:save': {
+        const body = {};
+        if (typeof flags.name === 'string' && flags.name.trim()) body.name = flags.name.trim();
+        if (typeof flags.email === 'string' && flags.email.trim()) body.email = flags.email.trim();
+        if (typeof flags.company === 'string' && flags.company.trim()) body.company = flags.company.trim();
+        if (typeof flags.stage === 'string' && flags.stage.trim()) body.stage = flags.stage.trim();
+        if (typeof flags.tags === 'string') body.tags = splitList(flags.tags);
+        if (!body.name && !body.email) throw new CliError('Provide --name or --email.', { code: 'missing_flag' });
+        emit(await req('POST', '/v1/contacts', { body }));
+        return 0;
+      }
+
+      case 'lead-forms':
+        emit(await req('GET', '/v1/lead-forms'));
+        return 0;
+
+      case 'campaigns':
+        emit(await req('GET', '/v1/campaigns'));
+        return 0;
+
+      case 'campaigns:report': {
+        const id = typeof flags.id === 'string' && flags.id.trim() ? encodeURIComponent(flags.id.trim()) : null;
+        emit(await req('GET', id ? `/v1/campaigns/${id}/report` : '/v1/campaigns/report'));
+        return 0;
+      }
+
+      case 'conversions:record': {
+        const body = { event: requireFlag(flags, 'event') };
+        if (typeof flags.campaign === 'string' && flags.campaign.trim()) body.campaignId = flags.campaign.trim();
+        if (typeof flags.contact === 'string' && flags.contact.trim()) body.contactId = flags.contact.trim();
+        if (flags['value-cents'] !== undefined) body.valueCents = Number(flags['value-cents']);
+        if (typeof flags.currency === 'string' && flags.currency.trim()) body.currency = flags.currency.trim();
+        emit(await req('POST', '/v1/conversions', { body }));
+        return 0;
+      }
+
+      case 'jobs:fix-retry': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        const body = {
+          idempotencyKey:
+            typeof flags['idempotency-key'] === 'string' && flags['idempotency-key'].trim()
+              ? flags['idempotency-key'].trim()
+              : crypto.randomUUID(),
+          ...(typeof flags.text === 'string' ? { text: flags.text } : {}),
+          ...(typeof flags.at === 'string' && flags.at.trim() ? { scheduledAt: flags.at.trim() } : {}),
+        };
+        emit(await req('POST', `/v1/jobs/${id}/fix-retry`, { body }));
+        return 0;
+      }
+
+      case 'broadcasts':
+        emit(await req('GET', '/v1/broadcasts'));
+        return 0;
+
+      case 'broadcasts:save': {
+        const body = {};
+        if (typeof flags.id === 'string' && flags.id.trim()) body.id = flags.id.trim();
+        if (typeof flags.article === 'string' && flags.article.trim()) body.articleId = flags.article.trim();
+        if (typeof flags.subject === 'string' && flags.subject.trim()) body.subject = flags.subject.trim();
+        if (typeof flags.body === 'string' && flags.body.trim()) body.body = flags.body;
+        if (typeof flags.stages === 'string' || typeof flags.tags === 'string') {
+          body.segment = {
+            ...(typeof flags.stages === 'string' ? { stages: splitList(flags.stages) } : {}),
+            ...(typeof flags.tags === 'string' ? { tags: splitList(flags.tags) } : {}),
+          };
+        }
+        emit(await req('POST', '/v1/broadcasts', { body }));
+        return 0;
+      }
+
+      case 'broadcasts:send': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('POST', `/v1/broadcasts/${id}/send`, { body: {} }));
+        return 0;
+      }
+
+      case 'sequences':
+        emit(await req('GET', '/v1/sequences'));
+        return 0;
+
+      case 'sequences:save': {
+        const kind = typeof flags.trigger === 'string' && flags.trigger.trim() ? flags.trigger.trim() : 'any_form';
+        const trigger = {
+          kind,
+          ...(kind === 'lead_form' ? { formId: requireFlag(flags, 'form') } : {}),
+          ...(kind === 'tag' ? { tag: requireFlag(flags, 'tag') } : {}),
+        };
+        const delayMinutes = flags.delay !== undefined ? Number(flags.delay) : 0;
+        const body = {
+          name: requireFlag(flags, 'name'),
+          trigger,
+          steps: [
+            {
+              delayMinutes,
+              subject: requireFlag(flags, 'subject'),
+              body: requireFlag(flags, 'body'),
+            },
+          ],
+        };
+        emit(await req('POST', '/v1/sequences', { body }));
+        return 0;
+      }
+
+      case 'sequences:enroll': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        const contactId = requireFlag(flags, 'contact');
+        emit(await req('POST', `/v1/sequences/${id}/enroll`, { body: { contactId } }));
+        return 0;
+      }
+
+      case 'sequences:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/sequences/${id}`));
+        return 0;
+      }
+
+      case 'conversion-hooks':
+        emit(await req('GET', '/v1/conversion-hooks'));
+        return 0;
+
+      case 'conversion-hooks:create': {
+        const body = {
+          name: requireFlag(flags, 'name'),
+          source: typeof flags.source === 'string' && flags.source.trim() ? flags.source.trim() : 'stripe',
+          ...(typeof flags.campaign === 'string' && flags.campaign.trim() ? { defaultCampaignId: flags.campaign.trim() } : {}),
+          ...(typeof flags.secret === 'string' && flags.secret.trim() ? { signingSecret: flags.secret.trim() } : {}),
+        };
+        emit(await req('POST', '/v1/conversion-hooks', { body }));
+        return 0;
+      }
+
+      case 'conversion-hooks:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/conversion-hooks/${id}`));
+        return 0;
+      }
+
+      case 'evergreen':
+        emit(await req('GET', '/v1/evergreen'));
+        return 0;
+
+      case 'evergreen:save': {
+        const body = {
+          name: requireFlag(flags, 'name'),
+          accountIds: splitList(requireFlag(flags, 'accounts')),
+          ...(typeof flags.tag === 'string' && flags.tag.trim() ? { tag: flags.tag.trim() } : {}),
+          ...(flags.cadence !== undefined ? { cadenceDays: Number(flags.cadence) } : {}),
+          ...(flags.cooldown !== undefined ? { cooldownDays: Number(flags.cooldown) } : {}),
+          ...(typeof flags.mode === 'string' && flags.mode.trim() ? { mode: flags.mode.trim() } : {}),
+        };
+        emit(await req('POST', '/v1/evergreen', { body }));
+        return 0;
+      }
+
+      case 'evergreen:run': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('POST', `/v1/evergreen/${id}/run`, { body: {} }));
+        return 0;
+      }
+
+      case 'evergreen:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/evergreen/${id}`));
+        return 0;
+      }
+
+      case 'reports:schedules':
+        emit(await req('GET', '/v1/reports/schedules'));
+        return 0;
+
+      case 'reports:schedules:create': {
+        const recipients = splitList(requireFlag(flags, 'recipients'));
+        const body = {
+          name: requireFlag(flags, 'name'),
+          cadence: typeof flags.cadence === 'string' ? flags.cadence.trim() : 'weekly',
+          recipients,
+          ...(flags.days !== undefined ? { days: Number(flags.days) } : {}),
+          ...(flags['white-label'] ? { hideBranding: true } : {}),
+        };
+        emit(await req('POST', '/v1/reports/schedules', { body }));
+        return 0;
+      }
+
+      case 'reports:schedules:send': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('POST', `/v1/reports/schedules/${id}/send`, { body: {} }));
+        return 0;
+      }
+
+      case 'reports:schedules:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/reports/schedules/${id}`));
+        return 0;
+      }
+
+      case 'rss':
+        emit(await req('GET', '/v1/rss-feeds'));
+        return 0;
+
+      case 'rss:add': {
+        const accountIds = splitList(requireFlag(flags, 'accounts'));
+        if (!accountIds.length) throw new CliError('--accounts needs at least one account id.', { code: 'missing_flag' });
+        const body = {
+          url: requireFlag(flags, 'url'),
+          accountIds,
+          ...(typeof flags.name === 'string' && flags.name.trim() ? { name: flags.name.trim() } : {}),
+          ...(typeof flags.mode === 'string' && flags.mode.trim() ? { mode: flags.mode.trim() } : {}),
+          ...(flags.poll !== undefined ? { pollMinutes: requireIntFlag(flags, 'poll') } : {}),
+          ...(flags.delay !== undefined ? { delayMinutes: Number(flags.delay) } : {}),
+          ...(typeof flags.template === 'string' && flags.template.trim() ? { template: flags.template.trim() } : {}),
+        };
+        emit(await req('POST', '/v1/rss-feeds', { body }));
+        return 0;
+      }
+
+      case 'rss:sync': {
+        const id = typeof flags.id === 'string' && flags.id.trim() ? encodeURIComponent(flags.id.trim()) : null;
+        emit(await req('POST', id ? `/v1/rss-feeds/${id}/sync` : '/v1/rss-feeds/sync', { body: {} }));
+        return 0;
+      }
+
+      case 'rss:delete': {
+        const id = encodeURIComponent(requireFlag(flags, 'id'));
+        emit(await req('DELETE', `/v1/rss-feeds/${id}`));
+        return 0;
+      }
+
+      case 'wordpress':
+        emit(await req('GET', '/v1/wordpress'));
+        return 0;
+
+      case 'wordpress:connect': {
+        const body = {
+          siteUrl: requireFlag(flags, 'url'),
+          username: requireFlag(flags, 'user'),
+          applicationPassword: requireFlag(flags, 'password'),
+          ...(typeof flags.status === 'string' && flags.status.trim() ? { defaultStatus: flags.status.trim() } : {}),
+        };
+        emit(await req('POST', '/v1/wordpress/connect', { body }));
+        return 0;
+      }
+
+      case 'wordpress:taxonomies':
+        emit(await req('GET', '/v1/wordpress/taxonomies'));
+        return 0;
+
+      case 'wordpress:publish': {
+        const parseNums = (raw) =>
+          splitList(raw)
+            .map((v) => Number(v))
+            .filter((n) => Number.isInteger(n) && n > 0);
+        const body = {};
+        if (typeof flags.article === 'string' && flags.article.trim()) body.articleId = flags.article.trim();
+        if (typeof flags.title === 'string' && flags.title.trim()) body.title = flags.title.trim();
+        if (typeof flags.body === 'string' && flags.body.trim()) body.body = flags.body;
+        if (typeof flags.status === 'string' && flags.status.trim()) body.status = flags.status.trim();
+        if (typeof flags.at === 'string' && flags.at.trim()) body.publishAt = flags.at.trim();
+        if (typeof flags.categories === 'string') {
+          const cats = parseNums(flags.categories);
+          if (cats.length) body.categories = cats;
+        }
+        if (typeof flags.tags === 'string') {
+          const tags = parseNums(flags.tags);
+          if (tags.length) body.tags = tags;
+        }
+        if (!body.articleId && (!body.title || !body.body)) {
+          throw new CliError('Pass --article <id> or both --title and --body.', { code: 'missing_flag' });
+        }
+        emit(await req('POST', '/v1/wordpress/publish', { body }));
+        return 0;
+      }
+
+      case 'wordpress:disconnect':
+        emit(await req('DELETE', '/v1/wordpress'));
         return 0;
 
       case 'digest':

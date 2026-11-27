@@ -2,23 +2,22 @@
 
 # Spica Post Agent Plugin & MCP Server
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.1.0-green.svg)]()
+[![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-3B9AF8)](https://spicapost.com/mcp/)
+[![REST API](https://img.shields.io/badge/REST_API-163_routes-1F2A37)](https://spicapost.com/developers/)
+[![Listed on Electra Index](https://electraindex.com/api/badge/spica-post)](https://electraindex.com/mcp/spica-post?utm_source=badge&utm_campaign=listing)
 [![Spica Post MCP connector](https://glama.ai/mcp/connectors/com.spicapost/spica-post/badges/score.svg)](https://glama.ai/mcp/connectors/com.spicapost/spica-post)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.8-green.svg)]()
-[![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-3B9AF8)](https://spicapost.com/mcp/)
-[![REST API](https://img.shields.io/badge/REST_API-166_routes-1F2A37)](https://spicapost.com/developers/)
-[![Listed on Electra Index](https://electraindex.com/api/badge/spica-post)](https://electraindex.com/mcp/spica-post?utm_source=badge&utm_campaign=listing)
+Give your AI assistant or coding agent full social media publishing, brand voice, asset library, unified inbox (reply + moderation), auto-crossposting, RSS auto-posting, WordPress publishing, Evergreen recycling, Marketing CRM, owned email broadcasts & welcome sequences, conversion webhooks, white-label client portals (/portal & /onboard), scheduled client reports, link pages, tracked short links, calendar sync, approvals, structured failure recovery and growth analytics through [Spica Post](https://spicapost.com).
 
-Give your AI assistant or coding agent full social media publishing, brand voice, asset library, unified inbox, auto-crossposting, link pages, tracked short links, calendar sync, approvals, structured failure recovery and growth analytics through [Spica Post](https://spicapost.com).
-
-- **Hosted MCP Endpoint:** `https://app.spicapost.com/mcp` (Streamable HTTP, OAuth with automatic discovery and registration: **no API key needed**) · Lean 28-tool profile: `https://app.spicapost.com/mcp?profile=core`
-- **MCP Surface:** **175 tools** (or **28** with `?profile=core`), **17 guided prompts** with argument completions, and **28 read-only resources & multi-brand URI templates**
-- **Developer REST API:** 166 routes at `https://app.spicapost.com/v1` (OpenAPI 3.0.3: `/v1/openapi.json`)
+- **Hosted MCP Endpoint:** `https://app.spicapost.com/mcp` (Streamable HTTP, OAuth with automatic discovery and registration: **no API key needed**) · Lean 39-tool default + progressive discovery (`tools_search`, `tools_read`, `tools_run`) · Ultra-lean 28-tool profile: `?profile=core` · Composable domain toolsets: `?profile=links,inbox` · Full flat catalog: `?profile=full`
+- **MCP Surface:** **39 default tools** (plus `tools_search`, `tools_read` and `tools_run` reaching all **231 tools**; **28** with `?profile=core`; all **231** flat with `?profile=full`), **17 guided prompts** with argument completions, and **26 read-only resources & multi-brand URI templates**
+- **Developer REST API & SDK:** 163 routes at `https://app.spicapost.com/v1` (OpenAPI 3.0.3: `/v1/openapi.json`), 21 signed webhook events, official zero-dependency TypeScript/JavaScript SDK (`@spicapost/sdk`)
 - **CLI:** Zero-dependency `spica-cli` (exposes `spica` and `spica-cli`, plus bundled fallback `skills/spica-post/scripts/spica.mjs`)
 - **Registry ID:** `com.spicapost/spica-post` in the [Official MCP Registry](https://registry.modelcontextprotocol.io/v0/servers?search=com.spicapost/spica-post)
 
-**Networks:** X, LinkedIn, Bluesky, Mastodon (any public server) and Google Business Profile enabled today. Instagram, Facebook Pages, Threads, TikTok, YouTube, Pinterest and LinkedIn Company Pages are built and activate as each network approves the app. See live [Channel Cards](https://spicapost.com/channels/) and the [Failed-Post Guide](https://spicapost.com/failed-posts/).
+**Networks:** X, LinkedIn (with PDF document posts), Bluesky, Mastodon (any public server), WordPress (REST API v2) and Google Business Profile enabled today. Instagram, Facebook Pages, Threads, TikTok, YouTube, Pinterest and LinkedIn Company Pages are built and activate as each network approves the app. See live [Channel Cards](https://spicapost.com/channels/) and the [Failed-Post Guide](https://spicapost.com/failed-posts/).
 
 ## Portable Agent Plugin (Cursor, Claude Code, VS Code, Windsurf, Codex)
 

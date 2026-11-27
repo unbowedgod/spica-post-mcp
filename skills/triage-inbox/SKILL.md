@@ -5,7 +5,7 @@ description: Sync, review and answer open social media comments (Bluesky, Instag
 
 # Triage your Unified Inbox
 
-Use this workflow whenever the customer asks to check comments, answer Google reviews, manage saved replies, or clear their Unified Inbox across one or all brands (Studio and Pro).
+Use this workflow whenever the customer asks to check comments, answer Google reviews, manage saved replies, or clear their Unified Inbox across one or all brands (Studio, Pro and Agency).
 
 ## Step 1: Load brand voice, saved replies and open items
 

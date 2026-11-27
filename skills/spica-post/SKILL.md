@@ -2,11 +2,12 @@
 name: spica-post
 description: >
   Draft, validate, schedule, queue and track social media posts in your saved brand across connected
-  accounts via Spica Post (hosted OAuth MCP server, spica-cli, or /v1 REST API). Covers brand
-  setup, media library uploads and tagging, unified inbox, auto-crossposting, platform-specific
-  options, queue scheduling, whole-account analytics sync, tracked short links, link pages, calendar
-  sync, client review links and team approvals.
-last-updated: 2026-11-24
+  accounts via Spica Post (hosted OAuth MCP server, spica-cli, @spicapost/sdk, or /v1 REST API).
+  Covers brand setup, media library uploads, unified inbox (reply + moderation), auto-crossposting,
+  RSS auto-posting, WordPress publishing, Evergreen recycling, Marketing CRM, lead forms, email
+  broadcasts & welcome sequences, conversion webhooks, branded client portals (/portal & /onboard),
+  scheduled white-label reports, link pages, calendar sync and team approvals.
+last-updated: 2026-11-27
 allowed-tools: Bash(npx github:unbowedgod/spica-post-mcp:*), Bash(spica:*), Bash(spica-cli:*), Bash(node *spica.mjs:*)
 ---
 
@@ -32,7 +33,7 @@ pages, tracked short links and whole-account analytics through [Spica Post](http
 Two ways to connect (pick whichever fits your environment):
 
 1. **Hosted MCP Server (OAuth, zero API key; recommended for Cursor, Claude, ChatGPT, Codex, Windsurf):**
-   `https://app.spicapost.com/mcp` (full 175 tools) or `https://app.spicapost.com/mcp?profile=core` (lean 28 core tools for small context windows)
+   `https://app.spicapost.com/mcp` (lean 39-tool default + `tools_search`/`tools_read`/`tools_run` covering all 231 tools), `?profile=core` (ultra-lean 28 tools), `?profile=links,inbox` (composable domain toolsets), or `?profile=full` (all 231 tools flat)
 2. **CLI / REST API (for terminal agents, cron jobs, CI, OpenClaw, or clients without OAuth):**
    Install globally (`npm i -g github:unbowedgod/spica-post-mcp`) to run **`spica <command>`**, or run
    zero-install via **`npx github:unbowedgod/spica-post-mcp <command>`** (Node.js 18+, zero dependencies).
@@ -308,10 +309,11 @@ GET  /v1/webhooks
 
 ## Hosted MCP Integration
 
-When connected to `https://app.spicapost.com/mcp`, the assistant gets **175 tools**, **17 guided prompts**,
-and **28 read-only resources/URI templates** under one OAuth login (covering all brands). For lightweight
-or context-constrained clients, connect to `https://app.spicapost.com/mcp?profile=core` for the lean
-**28-tool** daily publishing profile.
+When connected to `https://app.spicapost.com/mcp`, the assistant gets a lean **39-tool** default catalog
+(every daily workflow plus `tools_search`, `tools_read` and `tools_run` for on-demand access to all **175 tools**),
+**17 guided prompts**, and **26 read-only resources/URI templates** under one OAuth login (covering all brands).
+Connect to `?profile=core` for the ultra-lean **28-tool** profile, `?profile=links,inbox` for composable domain
+toolsets (`publishing`, `links`, `inbox`, `blog`, `growth`, `agency`, `team`), or `?profile=full` for all 175 tools flat.
 
 Core MCP tools you will use most often:
 
